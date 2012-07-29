@@ -19,7 +19,7 @@ class CSVTest extends Solution10\Tests\TestCase
 	}
 	
 	/**
-	 * Tests file finding
+	 * Tests not finding a file.
 	 *
 	 * @expectedException 		Solution10\CSV\Exception\File
 	 * @expectedExceptionCode	1
@@ -27,6 +27,17 @@ class CSVTest extends Solution10\Tests\TestCase
 	public function testFileFindFail()
 	{
 		$csv = new Solution10\CSV\CSV('Solution10/CSV/tests/data/does_not_exist.csv');
+	}
+	
+	/**
+	 * Tests finding a file we're locked out of.
+	 *
+	 * @expectedException 		Solution10\CSV\Exception\File
+	 * @expectedExceptionCode	2
+	 */
+	public function testFileReadFail()
+	{
+		$csv = new Solution10\CSV\CSV('Solution10/CSV/tests/data/badfile.csv');
 	}
 	
 	/**

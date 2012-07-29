@@ -54,11 +54,28 @@ class SchemaTest extends Solution10\Tests\TestCase
 	}
 	
 	/**
+	 * Testing exception thrown on not providing a function as callback
+	 *
+	 * @expectedException 		Solution10\CSV\Exception\Validation
+	 * @expectedExceptionCode 	1
+	 */
+	public function testUnknownMethod()
+	{
+		$schema = new Solution10\CSV\Schema();
+		$schema->add_field(0, 'customer_name', array(
+			'bad_name',
+		));
+		
+		$data = array('Alex');
+		$schema->validate_row($data);
+	}
+	
+	/**
 	 * Testing out of index callbacks
 	 *
-	 * @expectedException 		Solution10\CSV\Exception\Index
+	 * @expectedException 		Solution10\Collection\Exception\Index
 	 */
-	public function textBadIndexValidation()
+	public function testBadIndexValidation()
 	{
 		$schema = new Solution10\CSV\Schema();
 		$schema->add_field(1, 'customer_name', array(

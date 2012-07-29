@@ -76,4 +76,31 @@ class SchemaTest extends Solution10\Tests\TestCase
 		$schema->validate_row($data);
 	}
 	
+	
+	/**
+	 * ---------------------- Validating Tests -----------------------------------
+	 */
+	
+	/**
+	 * Testing not empty
+	 *
+	 * @expectedException 		Solution10\CSV\Exception\Validation
+	 * @expectedExceptionCode 	100
+	 */
+	public function testValidatingNotEmpty()
+	{
+		$schema = new Solution10\CSV\Schema();
+		$schema->add_field(0, 'customer_name', array('not_empty'));
+		
+		$data = array('');
+		$schema->validate_row($data);
+	}
+	
+	/**
+	 * Testing email validation
+	 *
+	 * @expectedException 		Solution10\CSV\Exception\Validation
+	 * @expectedExceptionCode 	100
+	 */
+	
 }

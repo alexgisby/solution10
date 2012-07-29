@@ -127,11 +127,20 @@ class Schema
 	{
 		if(!($value !== null && $value != '' && !empty($value)))
 		{
-			throw new Exception\Validation('Value is empty');
+			throw new Exception\Validation('Value is empty', Exception\Validation::ERROR_NOT_EMPTY);
 		}
 	}
 	
-	
+	/**
+	 * Validates an email address
+	 *
+	 * @param 	mixed 	Value
+	 * @throws 	Solution10\CSV\Exception\Validation
+	 */
+	protected function validate_email($value)
+	{
+		var_dump(filter_var($value, FILTER_VALIDATE_EMAIL));
+	}
 	
 	
 	

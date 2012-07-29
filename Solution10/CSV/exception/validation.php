@@ -16,4 +16,10 @@ class Validation extends Exception
 	 */
 	const ERROR_UNKNOWN_METHOD = 1;
 	
+	
+	/**
+	 * @var 	int 	Not Empty failed
+	 */
+	const ERROR_NOT_EMPTY = 100;
+	
 }

@@ -52,4 +52,24 @@ class SchemaTest extends Solution10\Tests\TestCase
 		$data = array('Alex');
 		$schema->validate_row($data);
 	}
+	
+	/**
+	 * Testing out of index callbacks
+	 *
+	 * @expectedException 		Solution10\CSV\Exception\Index
+	 */
+	public function textBadIndexValidation()
+	{
+		$schema = new Solution10\CSV\Schema();
+		$schema->add_field(1, 'customer_name', array(
+			function($value)
+			{
+				return true;
+			}
+		));
+		
+		$data = array('Alex');
+		$schema->validate_row($data);
+	}
+	
 }

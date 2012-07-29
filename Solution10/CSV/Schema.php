@@ -89,7 +89,7 @@ class Schema
 			if(!array_key_exists($index, $data))
 			{
 				// Index doesn't exist. Do something more useful here later.
-				return false;
+				throw new Exception\Index('Unknown Index:' . $index);
 			}
 			
 			// Loop through the rules, calling them one by one:

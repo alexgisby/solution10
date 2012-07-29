@@ -139,7 +139,10 @@ class Schema
 	 */
 	protected function validate_email($value)
 	{
-		var_dump(filter_var($value, FILTER_VALIDATE_EMAIL));
+		if(filter_var($value, FILTER_VALIDATE_EMAIL) === false)
+		{
+			throw new Exception\Validation('Value is not a valid email', Exception\Validation::ERROR_EMAIL);
+		}
 	}
 	
 	

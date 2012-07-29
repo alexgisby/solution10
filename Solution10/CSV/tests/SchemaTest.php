@@ -82,12 +82,12 @@ class SchemaTest extends Solution10\Tests\TestCase
 	 */
 	
 	/**
-	 * Testing not empty
+	 * Testing not empty Failure
 	 *
 	 * @expectedException 		Solution10\CSV\Exception\Validation
 	 * @expectedExceptionCode 	100
 	 */
-	public function testValidatingNotEmpty()
+	public function testValidatingNotEmptyFail()
 	{
 		$schema = new Solution10\CSV\Schema();
 		$schema->add_field(0, 'customer_name', array('not_empty'));
@@ -97,10 +97,41 @@ class SchemaTest extends Solution10\Tests\TestCase
 	}
 	
 	/**
-	 * Testing email validation
+	 * Testing not empty success
+	 */
+	public function testValidatingNotEmpty()
+	{
+		$schema = new Solution10\CSV\Schema();
+		$schema->add_field(0, 'customer_name', array('not_empty'));
+		
+		$data = array('Alex');
+		$schema->validate_row($data);
+	}
+	
+	/**
+	 * Testing email validation Failure
 	 *
 	 * @expectedException 		Solution10\CSV\Exception\Validation
-	 * @expectedExceptionCode 	100
+	 * @expectedExceptionCode 	200
 	 */
+	public function testValidatingEmailFail()
+	{
+		$schema = new Solution10\CSV\Schema();
+		$schema->add_field(0, 'customer_email', array('email'));
+		
+		$data = array('alex');
+		$schema->validate_row($data);
+	}
 	
+	/**
+	 * Testing email validation success
+	 */
+	public function testValidatingEmail()
+	{
+		$schema = new Solution10\CSV\Schema();
+		$schema->add_field(0, 'customer_email', array('email'));
+		
+		$data = array('alex@example.com');
+		$schema->validate_row($data);
+	}
 }

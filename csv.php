@@ -20,7 +20,7 @@ $schema->add_field(0, 'full_name', array(
 	}
 ));
 
-var_dump($schema); exit;
+$schema->validate_row(array('Alex'));
 
 $csv = new Solution10\CSV\CSV('Solution10/CSV/tests/data/test.csv', $schema);
 

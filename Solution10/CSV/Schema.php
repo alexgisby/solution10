@@ -70,4 +70,69 @@ class Schema
 		return $this->fields;
 	}
 	
+	
+	/**
+	 * Validates a row of data against the current schema
+	 *
+	 * @param 	array 	Row of data
+	 * @throws 	Solution10\CSV\Exception\Validation
+	 */
+	public function validate_row(array $data)
+	{
+		foreach($this->fields as $index => $field)
+		{
+			if(!array_key_exists($index, $data))
+			{
+				// Index doesn't exist. Do something more useful here later.
+				return false;
+			}
+			
+			// Loop through the rules, calling them one by one:
+			foreach($field['rules'] as $rule)
+			{
+				if(is_string($rule))
+				{
+					// Try and call this function on the Schema Object:
+					$func_name = 'validate_' . $rule;
+					if(method_exists($this, $func_name))
+					{
+						$this->$func_name($data[$index]);
+					}
+					else
+					{
+						// Throw an exception here to say we don't know this function.
+						throw new Exception\Validation('Unknown validation method: "' . $rule . '"', Exception\Validation::ERROR_UNKNOWN_METHOD);
+					}
+				}
+				elseif($rule instanceof \Closure)
+				{
+					// Callback function!
+					$rule($data[$index]);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * ----------------------- Built in Validation ---------------------------
+	 */
+	
+	/**
+	 * Checks that an item is not null or empty.
+	 *
+	 * @param 	mixed 	Input data
+	 * @throws 	Solution10\CSV\Exception\Validation
+	 */
+	protected function validate_not_empty($value)
+	{
+		if(!($value !== null && $value != '' && !empty($value)))
+		{
+			throw new Exception\Validation('Value is empty');
+		}
+	}
+	
+	
+	
+	
+	
 }

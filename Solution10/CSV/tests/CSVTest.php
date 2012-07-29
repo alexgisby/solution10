@@ -123,4 +123,37 @@ class CSVTest extends Solution10\Tests\TestCase
 		$this->assertEquals($csv[0][0], 'Alex');
 		$this->assertEquals($csv[1][0], 'Jane');
 	}
+	
+	/**
+	 * Testing the fetching of dud rows
+	 */
+	public function testBadRows()
+	{
+		$schema = new Solution10\CSV\Schema();
+		$schema->add_field(0, 'firstname', array(
+			function($value)
+			{
+				if(!is_string($value) || strlen($value) < 1)
+				{
+					throw new Solution10\CSV\Exception\Validation('Value not long enough');
+				}
+			}
+		));
+		
+		$schema->add_field(2, 'email', array(
+			function($value)
+			{
+				if(filter_var($value, FILTER_VALIDATE_EMAIL) === false)
+				{
+					throw new Solution10\CSV\Exception\Validation('Not valid email');
+				}
+			}
+		));
+		
+		$csv = new Solution10\CSV\CSV('Solution10/CSV/tests/data/bad.csv', $schema);
+		$bad_rows = $csv->bad_rows();
+		$this->assertEquals(count($bad_rows), 2);
+		$this->assertEquals($bad_rows[0][1], 54);
+		$this->assertEquals($bad_rows[1][0], 'Hannah');
+	}
 }

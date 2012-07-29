@@ -122,4 +122,11 @@ class CSV extends \Solution10\Collection\Collection
 		return $this->schema;
 	}
 	
+	/**
+	 * Retrieving the bad rows from the CSV file
+	 */
+	public function bad_rows()
+	{
+		return $this->bad_rows;
+	}
 }

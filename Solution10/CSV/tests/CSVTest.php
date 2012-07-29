@@ -71,4 +71,56 @@ class CSVTest extends Solution10\Tests\TestCase
 		
 		$this->assertTrue($csv->schema() instanceof Solution10\CSV\Schema);
 	}
+	
+	/**
+	 * Testing validation against a schema
+	 */
+	public function testSchemaValidation()
+	{
+		$schema = new Solution10\CSV\Schema();
+		$schema->add_field(0, 'firstname', array(
+			function($value)
+			{
+				if(!is_string($value) || strlen($value) < 1)
+				{
+					throw new Solution10\CSV\Exception\Validation('Value not long enough');
+				}
+			}
+		));
+		
+		$csv = new Solution10\CSV\CSV('Solution10/CSV/tests/data/test.csv', $schema);
+		$this->assertEquals(count($csv), 4); // All rows should pass.
+	}
+	
+	/**
+	 * Testing validation where a schema doesn't validate.
+	 */
+	public function testSchemaValidationFail()
+	{
+		$schema = new Solution10\CSV\Schema();
+		$schema->add_field(0, 'firstname', array(
+			function($value)
+			{
+				if(!is_string($value) || strlen($value) < 1)
+				{
+					throw new Solution10\CSV\Exception\Validation('Value not long enough');
+				}
+			}
+		));
+		
+		$schema->add_field(2, 'email', array(
+			function($value)
+			{
+				if(filter_var($value, FILTER_VALIDATE_EMAIL) === false)
+				{
+					throw new Solution10\CSV\Exception\Validation('Not valid email');
+				}
+			}
+		));
+		
+		$csv = new Solution10\CSV\CSV('Solution10/CSV/tests/data/bad.csv', $schema);
+		$this->assertEquals(count($csv), 2); // Only two rows pass validation.
+		$this->assertEquals($csv[0][0], 'Alex');
+		$this->assertEquals($csv[1][0], 'Jane');
+	}
 }

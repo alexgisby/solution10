@@ -41,6 +41,11 @@ class Schema
 	 */
 	protected $fields = array();
 	
+	/**
+	 * @var 	bool 	Whether bad rows should be stripped out of the CSV or not. Default true.
+	 */
+	public $strip_bad_rows = true;
+	
 	
 	/**
 	 * Adds a field into the schema. Optionally add in rules for this field.
@@ -89,7 +94,7 @@ class Schema
 			if(!array_key_exists($index, $data))
 			{
 				// Index doesn't exist. Do something more useful here later.
-				throw new Exception\Index('Unknown Index:' . $index);
+				throw new \Solution10\Collection\Exception\Index('Unknown Index:' . $index);
 			}
 			
 			// Loop through the rules, calling them one by one:

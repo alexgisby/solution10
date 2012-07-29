@@ -26,6 +26,11 @@ class CSV extends \Solution10\Collection\Collection
 	protected $schema;
 	
 	/**
+	 * @var 	array 	Bad rows stripped out of the CSV that do not validate.
+	 */
+	protected $bad_rows = array();
+	
+	/**
 	 * Constructor
 	 *
 	 * @param 	string 	Filename of CSV or false if no file
@@ -72,7 +77,16 @@ class CSV extends \Solution10\Collection\Collection
 											$this->schema->enclosure,
 											$this->schema->escape_char)) !== false)
 				{
-					$this->contents[] = $row;
+					try
+					{
+						$this->schema->validate_row($row);
+						$this->contents[] = $row;
+					}
+					catch(\Solution10\CSV\Exception\Validation $e)
+					{
+						// Bad row!
+						$this->bad_rows[] = $row;
+					}
 				}
 				
 				fclose($fh);

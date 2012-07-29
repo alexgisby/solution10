@@ -41,4 +41,33 @@ class Schema
 	 */
 	protected $fields = array();
 	
+	
+	/**
+	 * Adds a field into the schema. Optionally add in rules for this field.
+	 *
+	 * @param 	int 	Numerical index of this field in the CSV. Column number essentially.
+	 * @param 	string 	Field name
+	 * @param 	array 	Validation rules for this field.
+	 * @return 	this
+	 */
+	public function add_field($index, $name, $rules = array())
+	{
+		$this->fields[$index] = array(
+			'name' => $name,
+			'rules' => $rules,
+		);
+		
+		return $this;
+	}
+	
+	/**
+	 * Fetching all the fields from the Schema
+	 *
+	 * @return 	array
+	 */
+	public function fields()
+	{
+		return $this->fields;
+	}
+	
 }

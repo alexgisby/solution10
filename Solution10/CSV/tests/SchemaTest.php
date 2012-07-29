@@ -21,42 +21,19 @@ class SchemaTest extends Solution10\Tests\TestCase
 	public function testAddingFields()
 	{
 		$schema = new Solution10\CSV\Schema();
-		$schema->add_field(2, 'customer_name', array('not_empty'));
+		$schema->add_field(2, 'customer_name', array(
+			function($value)
+			{
+				return true;
+			}
+		));
 		
 		$fields = $schema->fields();
 		$this->assertEquals(count($fields), 1);
 		$this->assertTrue(array_key_exists(2, $fields));
 		$this->assertTrue($fields[2]['name'] == 'customer_name');
 		$this->assertTrue(is_array($fields[2]['rules']));
-		$this->assertEquals($fields[2]['rules'][0], 'not_empty');
-	}
-	
-	
-	/**
-	 * Validating rows against the schema
-	 */
-	public function testValidatingBasic()
-	{
-		$schema = new Solution10\CSV\Schema();
-		$schema->add_field(0, 'customer_name', array('not_empty'));
-		
-		$good_data = array('Alex');
-		$schema->validate_row($good_data);
-	}
-	
-	/**
-	 * Assigning an unknown rule.
-	 *
-	 * @expectedException 		Solution10\CSV\Exception\Validation
-	 * @expectedExceptionCode 	1
-	 */
-	public function testValidatingUnknownMethod()
-	{
-		$schema = new Solution10\CSV\Schema();
-		$schema->add_field(0, 'customer_name', array('unknown_method'));
-		
-		$data = array('Alex');
-		$schema->validate_row($data);
+		$this->assertTrue($fields[2]['rules'][0] instanceof \Closure);
 	}
 	
 	/**
@@ -73,65 +50,6 @@ class SchemaTest extends Solution10\Tests\TestCase
 		));
 		
 		$data = array('Alex');
-		$schema->validate_row($data);
-	}
-	
-	
-	/**
-	 * ---------------------- Validating Tests -----------------------------------
-	 */
-	
-	/**
-	 * Testing not empty Failure
-	 *
-	 * @expectedException 		Solution10\CSV\Exception\Validation
-	 * @expectedExceptionCode 	100
-	 */
-	public function testValidatingNotEmptyFail()
-	{
-		$schema = new Solution10\CSV\Schema();
-		$schema->add_field(0, 'customer_name', array('not_empty'));
-		
-		$data = array('');
-		$schema->validate_row($data);
-	}
-	
-	/**
-	 * Testing not empty success
-	 */
-	public function testValidatingNotEmpty()
-	{
-		$schema = new Solution10\CSV\Schema();
-		$schema->add_field(0, 'customer_name', array('not_empty'));
-		
-		$data = array('Alex');
-		$schema->validate_row($data);
-	}
-	
-	/**
-	 * Testing email validation Failure
-	 *
-	 * @expectedException 		Solution10\CSV\Exception\Validation
-	 * @expectedExceptionCode 	200
-	 */
-	public function testValidatingEmailFail()
-	{
-		$schema = new Solution10\CSV\Schema();
-		$schema->add_field(0, 'customer_email', array('email'));
-		
-		$data = array('alex');
-		$schema->validate_row($data);
-	}
-	
-	/**
-	 * Testing email validation success
-	 */
-	public function testValidatingEmail()
-	{
-		$schema = new Solution10\CSV\Schema();
-		$schema->add_field(0, 'customer_email', array('email'));
-		
-		$data = array('alex@example.com');
 		$schema->validate_row($data);
 	}
 }

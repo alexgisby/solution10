@@ -45,9 +45,13 @@ class Schema
 	/**
 	 * Adds a field into the schema. Optionally add in rules for this field.
 	 *
+	 * $rules should be an array of functions (probably callbacks) to call in
+	 * order to validate the array. These functions should throw \Exception\Validation
+	 * if they are not valid, and return false.
+	 *
 	 * @param 	int 	Numerical index of this field in the CSV. Column number essentially.
 	 * @param 	string 	Field name
-	 * @param 	array 	Validation rules for this field.
+	 * @param 	array 	Validation functions for this field.
 	 * @return 	this
 	 */
 	public function add_field($index, $name, $rules = array())
@@ -79,6 +83,7 @@ class Schema
 	 */
 	public function validate_row(array $data)
 	{
+		$valid = true;
 		foreach($this->fields as $index => $field)
 		{
 			if(!array_key_exists($index, $data))
@@ -90,61 +95,17 @@ class Schema
 			// Loop through the rules, calling them one by one:
 			foreach($field['rules'] as $rule)
 			{
-				if(is_string($rule))
+				// Callback function!
+				if($rule instanceof \Closure)
 				{
-					// Try and call this function on the Schema Object:
-					$func_name = 'validate_' . $rule;
-					if(method_exists($this, $func_name))
-					{
-						$this->$func_name($data[$index]);
-					}
-					else
-					{
-						// Throw an exception here to say we don't know this function.
-						throw new Exception\Validation('Unknown validation method: "' . $rule . '"', Exception\Validation::ERROR_UNKNOWN_METHOD);
-					}
-				}
-				elseif($rule instanceof \Closure)
-				{
-					// Callback function!
 					$rule($data[$index]);
+				}
+				else
+				{
+					throw new Exception\Validation('Rules must be functions!', Exception\Validation::ERROR_UNKNOWN_METHOD);
 				}
 			}
 		}
 	}
-	
-	/**
-	 * ----------------------- Built in Validation ---------------------------
-	 */
-	
-	/**
-	 * Checks that an item is not null or empty.
-	 *
-	 * @param 	mixed 	Input data
-	 * @throws 	Solution10\CSV\Exception\Validation
-	 */
-	protected function validate_not_empty($value)
-	{
-		if(!($value !== null && $value != '' && !empty($value)))
-		{
-			throw new Exception\Validation('Value is empty', Exception\Validation::ERROR_NOT_EMPTY);
-		}
-	}
-	
-	/**
-	 * Validates an email address
-	 *
-	 * @param 	mixed 	Value
-	 * @throws 	Solution10\CSV\Exception\Validation
-	 */
-	protected function validate_email($value)
-	{
-		if(filter_var($value, FILTER_VALIDATE_EMAIL) === false)
-		{
-			throw new Exception\Validation('Value is not a valid email', Exception\Validation::ERROR_EMAIL);
-		}
-	}
-	
-	
 	
 }

@@ -20,34 +20,29 @@ class CSV extends \Solution10\Collection\Collection
 	 */
 	protected $filepath;
 	
-	
 	/**
-	 * @var 	string 	delimiter
+	 * @var 	Schema 	Schema for the file.
 	 */
-	protected $delimiter;
-	
-	/**
-	 * @var 	string 	enclosure
-	 */
-	protected $enclosure;
-	
-	/**
-	 * @var 	string 	Escape character
-	 */
-	protected $escape_char;
+	protected $schema;
 	
 	/**
 	 * Constructor
 	 *
 	 * @param 	string 	Filename of CSV or false if no file
-	 * @param 	string 	Delimiter between fields
-	 * @param 	string 	String enclosure character
+	 * @param 	Schema	Schema to use for this file.
 	 * @param 	string 	Escape character
 	 */
-	public function __construct($filepath = false, $delimiter = ',', $enclosure = '"')
+	public function __construct($filepath = false, Schema $schema = null)
 	{
-		$this->delimiter 	= $delimiter;
-		$this->enclosure 	= $enclosure;
+		if($schema)
+		{
+			$this->schema($schema);
+		}
+		else
+		{
+			// Create a default schema:
+			$this->schema(new Schema());
+		}
 		
 		if($filepath)
 		{
@@ -72,7 +67,10 @@ class CSV extends \Solution10\Collection\Collection
 			if(($fh = @fopen($filepath, 'r')) !== false)
 			{
 				$this->contents = array();
-				while(($row = fgetcsv($fh, 1000)) !== false)
+				while(($row = fgetcsv($fh, $this->schema->max_line_length, 
+											$this->schema->delimiter, 
+											$this->schema->enclosure,
+											$this->schema->escape_char)) !== false)
 				{
 					$this->contents[] = $row;
 				}
@@ -91,6 +89,23 @@ class CSV extends \Solution10\Collection\Collection
 		}
 		
 		return $this;
+	}
+	
+	
+	/**
+	 * Gets / sets the Schema for the file.
+	 *
+	 * @param 	Schema 	(optional) set the schema for this CSV
+	 * @return 	Schema 	The current Schema on this file
+	 */
+	public function schema(Schema $s = null)
+	{
+		if($s)
+		{
+			$this->schema = $s;
+		}
+		
+		return $this->schema;
 	}
 	
 }

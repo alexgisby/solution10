@@ -40,4 +40,35 @@ class CSVTest extends Solution10\Tests\TestCase
 		$this->assertEquals(true, true);
 	}
 	
+	
+	/**
+	 * Testing the creation of files with a schema.
+	 */
+	public function testAddingSchema()
+	{
+		$schema = new Solution10\CSV\Schema();
+		$schema->delimiter = '	';
+		$schema->enclosure = '@';
+		$schema->escape_char = '_';
+		$schema->max_line_length = 1000;
+		
+		$csv = new Solution10\CSV\CSV('Solution10/CSV/tests/data/test.csv', $schema);
+		$this->assertTrue($csv instanceof Solution10\CSV\CSV);
+	}
+	
+	/**
+	 * Testing accessing the schema
+	 */
+	public function testRetrieveSchema()
+	{
+		$schema = new Solution10\CSV\Schema();
+		$schema->delimiter = '	';
+		$schema->enclosure = '@';
+		$schema->escape_char = '_';
+		$schema->max_line_length = 1000;
+		
+		$csv = new Solution10\CSV\CSV('Solution10/CSV/tests/data/test.csv', $schema);
+		
+		$this->assertTrue($csv->schema() instanceof Solution10\CSV\Schema);
+	}
 }

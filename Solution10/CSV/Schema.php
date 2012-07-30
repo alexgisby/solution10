@@ -42,6 +42,11 @@ class Schema
 	protected $fields = array();
 	
 	/**
+	 * @var 	array 	Errors validating a row
+	 */
+	protected $errors = array();
+	
+	/**
 	 * @var 	bool 	Whether bad rows should be stripped out of the CSV or not. Default true.
 	 */
 	public $strip_bad_rows = true;
@@ -121,4 +126,13 @@ class Schema
 		return count($this->errors) == 0;
 	}
 	
+	/**
+	 * Fetching the errors for the last row validated
+	 *
+	 * @return 	array
+	 */
+	public function errors()
+	{
+		return $this->errors;
+	}
 }

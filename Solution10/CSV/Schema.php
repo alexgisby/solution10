@@ -83,7 +83,7 @@ class Schema
 	 */
 	public function validate_row(array $data)
 	{
-		$valid = true;
+		$this->errors = array();
 		foreach($this->fields as $index => $field)
 		{
 			if(!array_key_exists($index, $data))
@@ -100,7 +100,15 @@ class Schema
 					// Callback function!
 					if($rule instanceof \Closure)
 					{
-						$rule($data[$index]);
+						try
+						{
+							$rule($data[$index]);
+						}
+						catch(\Solution10\CSV\Exception\Validation $e)
+						{
+							$key = (array_key_exists('name', $field))? $field['name'] : $index;
+							$this->errors[$key][] = array('message' => $e->getMessage(), 'code' => $e->getCode());
+						}
 					}
 					else
 					{
@@ -109,6 +117,8 @@ class Schema
 				}
 			}
 		}
+		
+		return count($this->errors) == 0;
 	}
 	
 }

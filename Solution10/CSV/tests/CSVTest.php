@@ -139,9 +139,9 @@ class CSVTest extends Solution10\Tests\TestCase
 		));
 		
 		$csv = new Solution10\CSV\CSV('Solution10/CSV/tests/data/bad.csv', $schema);
-		$this->assertEquals(count($csv), 2); // Only two rows pass validation.
-		$this->assertEquals($csv[0][0], 'Alex');
-		$this->assertEquals($csv[1][0], 'Jane');
+		$this->assertEquals(2, count($csv)); // Only two rows pass validation.
+		$this->assertEquals('Alex', $csv[0][0]);
+		$this->assertEquals('Jane', $csv[1][0]);
 	}
 	
 	/**
@@ -178,8 +178,8 @@ class CSVTest extends Solution10\Tests\TestCase
 		
 		$csv = new Solution10\CSV\CSV('Solution10/CSV/tests/data/bad.csv', $schema);
 		$bad_rows = $csv->bad_rows();
-		$this->assertEquals(count($bad_rows), 2);
-		$this->assertEquals($bad_rows[0][1], 54);
-		$this->assertEquals($bad_rows[1][0], 'Hannah');
+		$this->assertEquals(2, count($bad_rows));
+		$this->assertEquals(54, $bad_rows[0][1]);
+		$this->assertEquals('Hannah', $bad_rows[1][0]);
 	}
 }

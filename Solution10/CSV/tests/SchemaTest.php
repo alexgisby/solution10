@@ -50,13 +50,14 @@ class SchemaTest extends Solution10\Tests\TestCase
 			'validation' => array(
 				function($value)
 				{
+					// Pretend to do some validation...
 					return true;
 				}
 			),
 		));
 		
 		$data = array('Alex');
-		$schema->validate_row($data);
+		$this->assertTrue($schema->validate_row($data));
 	}
 	
 	/**

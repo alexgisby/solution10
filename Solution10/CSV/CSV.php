@@ -77,12 +77,11 @@ class CSV extends \Solution10\Collection\Collection
 											$this->schema->enclosure,
 											$this->schema->escape_char)) !== false)
 				{
-					try
+					if($this->schema->validate_row($row))
 					{
-						$this->schema->validate_row($row);
 						$this->contents[] = $row;
 					}
-					catch(\Solution10\CSV\Exception\Validation $e)
+					else
 					{
 						// Bad row!
 						$this->bad_rows[] = $row;

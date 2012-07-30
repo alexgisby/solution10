@@ -55,17 +55,12 @@ class Schema
 	 * if they are not valid, and return false.
 	 *
 	 * @param 	int 	Numerical index of this field in the CSV. Column number essentially.
-	 * @param 	string 	Field name
-	 * @param 	array 	Validation functions for this field.
+	 * @param 	array 	Name, Validation functions et al.
 	 * @return 	this
 	 */
-	public function add_field($index, $name, $rules = array())
+	public function add_field($index, $options = array())
 	{
-		$this->fields[$index] = array(
-			'name' => $name,
-			'rules' => $rules,
-		);
-		
+		$this->fields[$index] = $options;
 		return $this;
 	}
 	
@@ -98,16 +93,19 @@ class Schema
 			}
 			
 			// Loop through the rules, calling them one by one:
-			foreach($field['rules'] as $rule)
+			if(array_key_exists('validation', $field))
 			{
-				// Callback function!
-				if($rule instanceof \Closure)
+				foreach($field['validation'] as $rule)
 				{
-					$rule($data[$index]);
-				}
-				else
-				{
-					throw new Exception\Validation('Rules must be functions!', Exception\Validation::ERROR_UNKNOWN_METHOD);
+					// Callback function!
+					if($rule instanceof \Closure)
+					{
+						$rule($data[$index]);
+					}
+					else
+					{
+						throw new Exception\Validation('Rules must be functions!', Exception\Validation::ERROR_UNKNOWN_METHOD);
+					}
 				}
 			}
 		}

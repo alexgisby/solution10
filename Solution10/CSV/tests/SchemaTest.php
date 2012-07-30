@@ -21,19 +21,22 @@ class SchemaTest extends Solution10\Tests\TestCase
 	public function testAddingFields()
 	{
 		$schema = new Solution10\CSV\Schema();
-		$schema->add_field(2, 'customer_name', array(
-			function($value)
-			{
-				return true;
-			}
+		$schema->add_field(2, array(
+			'name' => 'customer_name',
+			'validation' => array(
+				function($value)
+				{
+					return true;
+				}
+			),
 		));
 		
 		$fields = $schema->fields();
 		$this->assertEquals(count($fields), 1);
 		$this->assertTrue(array_key_exists(2, $fields));
 		$this->assertTrue($fields[2]['name'] == 'customer_name');
-		$this->assertTrue(is_array($fields[2]['rules']));
-		$this->assertTrue($fields[2]['rules'][0] instanceof \Closure);
+		$this->assertTrue(is_array($fields[2]['validation']));
+		$this->assertTrue($fields[2]['validation'][0] instanceof \Closure);
 	}
 	
 	/**
@@ -42,11 +45,14 @@ class SchemaTest extends Solution10\Tests\TestCase
 	public function testValidatingClosure()
 	{
 		$schema = new Solution10\CSV\Schema();
-		$schema->add_field(0, 'customer_name', array(
-			function($value)
-			{
-				return true;
-			}
+		$schema->add_field(0, array(
+			'name' => 'customer_name',
+			'validation' => array(
+				function($value)
+				{
+					return true;
+				}
+			),
 		));
 		
 		$data = array('Alex');
@@ -62,8 +68,11 @@ class SchemaTest extends Solution10\Tests\TestCase
 	public function testUnknownMethod()
 	{
 		$schema = new Solution10\CSV\Schema();
-		$schema->add_field(0, 'customer_name', array(
-			'bad_name',
+		$schema->add_field(0, array(
+			'name' => 'customer_name',
+			'validation' => array(
+				'bad_name',
+			),
 		));
 		
 		$data = array('Alex');
@@ -78,11 +87,14 @@ class SchemaTest extends Solution10\Tests\TestCase
 	public function testBadIndexValidation()
 	{
 		$schema = new Solution10\CSV\Schema();
-		$schema->add_field(1, 'customer_name', array(
-			function($value)
-			{
-				return true;
-			}
+		$schema->add_field(1, array(
+			'name' => 'customer_name',
+			'validation' => array(
+				function($value)
+				{
+					return true;
+				}
+			),
 		));
 		
 		$data = array('Alex');

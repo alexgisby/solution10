@@ -89,14 +89,17 @@ class CSVTest extends Solution10\Tests\TestCase
 	public function testSchemaValidation()
 	{
 		$schema = new Solution10\CSV\Schema();
-		$schema->add_field(0, 'firstname', array(
-			function($value)
-			{
-				if(!is_string($value) || strlen($value) < 1)
+		$schema->add_field(0, array(
+			'name' => 'firstname', 
+			'validation' => array(
+				function($value)
 				{
-					throw new Solution10\CSV\Exception\Validation('Value not long enough');
+					if(!is_string($value) || strlen($value) < 1)
+					{
+						throw new Solution10\CSV\Exception\Validation('Value not long enough');
+					}
 				}
-			}
+			)
 		));
 		
 		$csv = new Solution10\CSV\CSV('Solution10/CSV/tests/data/test.csv', $schema);
@@ -109,24 +112,30 @@ class CSVTest extends Solution10\Tests\TestCase
 	public function testSchemaValidationFail()
 	{
 		$schema = new Solution10\CSV\Schema();
-		$schema->add_field(0, 'firstname', array(
-			function($value)
-			{
-				if(!is_string($value) || strlen($value) < 1)
+		$schema->add_field(0, array(
+			'name' => 'firstname',
+			'validation' => array(
+				function($value)
 				{
-					throw new Solution10\CSV\Exception\Validation('Value not long enough');
+					if(!is_string($value) || strlen($value) < 1)
+					{
+						throw new Solution10\CSV\Exception\Validation('Value not long enough');
+					}
 				}
-			}
+			),
 		));
 		
-		$schema->add_field(2, 'email', array(
-			function($value)
-			{
-				if(filter_var($value, FILTER_VALIDATE_EMAIL) === false)
+		$schema->add_field(2, array(
+			'name' => 'email',
+			'validation' => array(
+				function($value)
 				{
-					throw new Solution10\CSV\Exception\Validation('Not valid email');
+					if(filter_var($value, FILTER_VALIDATE_EMAIL) === false)
+					{
+						throw new Solution10\CSV\Exception\Validation('Not valid email');
+					}
 				}
-			}
+			),
 		));
 		
 		$csv = new Solution10\CSV\CSV('Solution10/CSV/tests/data/bad.csv', $schema);
@@ -141,24 +150,30 @@ class CSVTest extends Solution10\Tests\TestCase
 	public function testBadRows()
 	{
 		$schema = new Solution10\CSV\Schema();
-		$schema->add_field(0, 'firstname', array(
-			function($value)
-			{
-				if(!is_string($value) || strlen($value) < 1)
+		$schema->add_field(0, array(
+			'name' => 'firstname',
+			'validation' => array(
+				function($value)
 				{
-					throw new Solution10\CSV\Exception\Validation('Value not long enough');
+					if(!is_string($value) || strlen($value) < 1)
+					{
+						throw new Solution10\CSV\Exception\Validation('Value not long enough');
+					}
 				}
-			}
+			),
 		));
 		
-		$schema->add_field(2, 'email', array(
-			function($value)
-			{
-				if(filter_var($value, FILTER_VALIDATE_EMAIL) === false)
+		$schema->add_field(2, array(
+			'name' => 'email',
+			'validation' => array(
+				function($value)
 				{
-					throw new Solution10\CSV\Exception\Validation('Not valid email');
+					if(filter_var($value, FILTER_VALIDATE_EMAIL) === false)
+					{
+						throw new Solution10\CSV\Exception\Validation('Not valid email');
+					}
 				}
-			}
+			),
 		));
 		
 		$csv = new Solution10\CSV\CSV('Solution10/CSV/tests/data/bad.csv', $schema);

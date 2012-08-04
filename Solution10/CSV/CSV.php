@@ -31,6 +31,11 @@ class CSV extends \Solution10\Collection\Collection
 	protected $bad_rows = array();
 	
 	/**
+	 * @var 	array 	Validation errors for each row
+	 */
+	protected $validation_errors = array();
+	
+	/**
 	 * Constructor
 	 *
 	 * @param 	string 	Filename of CSV or false if no file
@@ -72,6 +77,7 @@ class CSV extends \Solution10\Collection\Collection
 			if(($fh = @fopen($filepath, 'r')) !== false)
 			{
 				$this->contents = array();
+				$row_idx = 0;
 				while(($row = fgetcsv($fh, $this->schema->max_line_length, 
 											$this->schema->delimiter, 
 											$this->schema->enclosure,
@@ -85,7 +91,10 @@ class CSV extends \Solution10\Collection\Collection
 					{
 						// Bad row!
 						$this->bad_rows[] = $row;
+						$this->validation_errors[$row_idx] = $this->schema->errors();
 					}
+					
+					$row_idx ++;
 				}
 				
 				fclose($fh);
@@ -123,9 +132,21 @@ class CSV extends \Solution10\Collection\Collection
 	
 	/**
 	 * Retrieving the bad rows from the CSV file
+	 *
+	 * @return 	array
 	 */
 	public function bad_rows()
 	{
 		return $this->bad_rows;
+	}
+	
+	/**
+	 * Retrieving validation errors from a read-in file
+	 *
+	 * @return 	array
+	 */
+	public function validation_errors()
+	{
+		return $this->validation_errors;
 	}
 }

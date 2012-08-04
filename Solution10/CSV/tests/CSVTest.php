@@ -182,4 +182,48 @@ class CSVTest extends Solution10\Tests\TestCase
 		$this->assertEquals(54, $bad_rows[0][1]);
 		$this->assertEquals('Hannah', $bad_rows[1][0]);
 	}
+	
+	
+	/**
+	 * Testing fetching the per-row errors
+	 */
+	public function testFetchErrors()
+	{
+		$schema = new Solution10\CSV\Schema();
+		$schema->add_field(0, array(
+			'name' => 'firstname',
+			'validation' => array(
+				function($value)
+				{
+					if(!is_string($value) || strlen($value) < 1)
+					{
+						throw new Solution10\CSV\Exception\Validation('Value not long enough');
+					}
+				}
+			),
+		));
+		
+		$schema->add_field(2, array(
+			'name' => 'email',
+			'validation' => array(
+				function($value)
+				{
+					if(filter_var($value, FILTER_VALIDATE_EMAIL) === false)
+					{
+						throw new Solution10\CSV\Exception\Validation('Not valid email');
+					}
+				}
+			),
+		));
+		
+		$csv = new Solution10\CSV\CSV('Solution10/CSV/tests/data/bad.csv', $schema);
+		$errors = $csv->validation_errors();
+		
+		$this->assertEquals(2, count($errors));
+		$this->assertTrue(array_key_exists(1, $errors));
+		$this->assertTrue(array_key_exists(3, $errors));
+		$this->assertTrue(array_key_exists('email', $errors[3]));
+	}
+	
+	
 }

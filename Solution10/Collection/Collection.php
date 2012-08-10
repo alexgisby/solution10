@@ -16,6 +16,9 @@ namespace Solution10\Collection;
  */
 class Collection implements \Countable, \ArrayAccess, \Iterator
 {
+	const SORT_ASC = 1;
+	const SORT_DESC = 2;
+
 	/**
 	 * @var 	array 	Data container
 	 */
@@ -227,4 +230,40 @@ class Collection implements \Countable, \ArrayAccess, \Iterator
 	{
 		return isset($this->contents[$this->iter_current_pos]);
 	}
+	
+	
+	/**
+	 * ---------------------------------- Sorting -----------------------------------
+	 */
+	
+	/**
+	 * Sorts the contents of the Collection. Uses the same sort flags as sort() and asort().
+	 * It
+	 *
+	 * @param 	int 	Sort direction (use the class constants)
+	 * @param 	bool 	Whether to preserve the keys of the collection or not. Default false.
+	 * @param 	int 	Sort flags (see http://php.net/sort)
+	 * @return 	this
+	 */
+	public function sort($direction, $preserve_keys = false, $flags = SORT_REGULAR)
+	{
+		switch($direction)
+		{
+			case self::SORT_ASC:
+				($preserve_keys)? asort($this->contents, $flags) : sort($this->contents, $flags);
+			break;
+			
+			case self::SORT_DESC:
+				($preserve_keys)? arsort($this->contents, $flags) : rsort($this->contents, $flags);
+			break;
+			
+			default:
+				throw new Exception('Unknown sort direction: ' . $direction);
+			break;
+		}
+		
+		return $this;
+	}
+	
+	
 }

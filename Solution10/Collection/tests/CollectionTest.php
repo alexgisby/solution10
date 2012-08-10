@@ -238,4 +238,41 @@ class CollectionTest extends Solution10\Tests\TestCase
 		$this->assertEquals('Item3', $splice);
 	}
 	
+	
+	/**
+	 * ----------------- Sorting Tests ------------------------
+	 */
+	
+	/**
+	 * Testing basic ascending sorting 
+	 */
+	public function testSort()
+	{
+		$collection = new Solution10\Collection\Collection(array(
+			'Apple', 'Orange', 'Banana', 'Cucumber',
+		));
+		
+		$collection->sort(Solution10\Collection\Collection::SORT_ASC);
+		$this->assertEquals('Apple', $collection[0]);
+		$this->assertEquals('Banana', $collection[1]);
+		$this->assertEquals('Cucumber', $collection[2]);
+		$this->assertEquals('Orange', $collection[3]);
+	}
+	
+	/**
+	 * Testing basic descending sorting
+	 */
+	public function testRSort()
+	{
+		$collection = new Solution10\Collection\Collection(array(
+			'Apple', 'Orange', 'Banana', 'Cucumber',
+		));
+		
+		$collection->sort(Solution10\Collection\Collection::SORT_DESC);
+		$this->assertEquals('Apple', $collection[3]);
+		$this->assertEquals('Banana', $collection[2]);
+		$this->assertEquals('Cucumber', $collection[1]);
+		$this->assertEquals('Orange', $collection[0]);
+	}
+	
 }

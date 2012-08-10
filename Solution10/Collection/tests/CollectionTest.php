@@ -238,6 +238,44 @@ class CollectionTest extends Solution10\Tests\TestCase
 		$this->assertEquals('Item3', $splice);
 	}
 	
+	/**
+	 * ----------------- Keys and Values Tests ------------------------
+	 */
+	
+	/**
+	 * Testing keys()
+	 */
+	public function testKeys()
+	{
+		$collection = new Solution10\Collection\Collection(array(
+			'name' => 'Alex',
+			'job' => 'Web Dev',
+			'fave_food' => 'Chinese',
+		));
+		
+		$keys = $collection->keys();
+		$this->assertEquals('name', $keys[0]);
+		$this->assertEquals('job', $keys[1]);
+		$this->assertEquals('fave_food', $keys[2]);
+	}
+	
+	/**
+	 * Testing values()
+	 */
+	public function testValues()
+	{
+		$collection = new Solution10\Collection\Collection(array(
+			'name' => 'Alex',
+			'job' => 'Web Dev',
+			'fave_food' => 'Chinese',
+		));
+		
+		$values = $collection->values();
+		$this->assertEquals('Alex', $values[0]);
+		$this->assertEquals('Web Dev', $values[1]);
+		$this->assertEquals('Chinese', $values[2]);
+	}
+	
 	
 	/**
 	 * ----------------- Sorting Tests ------------------------
@@ -275,32 +313,32 @@ class CollectionTest extends Solution10\Tests\TestCase
 		$this->assertEquals('Orange', $collection[0]);
 	}
 	
-	
 	/**
-	 * ----------------- Keys and Values Tests ------------------------
+	 * Testing the preserved key asc sorting
 	 */
-	
-	/**
-	 * Testing keys()
-	 */
-	public function testKeys()
+	public function testASort()
 	{
 		$collection = new Solution10\Collection\Collection(array(
 			'name' => 'Alex',
 			'job' => 'Web Dev',
 			'fave_food' => 'Chinese',
 		));
+		
+		$collection->sort(Solution10\Collection\Collection::SORT_ASC_PRESERVE_KEYS);
 		
 		$keys = $collection->keys();
 		$this->assertEquals('name', $keys[0]);
-		$this->assertEquals('job', $keys[1]);
-		$this->assertEquals('fave_food', $keys[2]);
+		$this->assertEquals('job', $keys[2]);
+		
+		$values = $collection->values();
+		$this->assertEquals('Alex', $values[0]);
+		$this->assertEquals('Web Dev', $values[2]);
 	}
 	
 	/**
-	 * Testing values()
+	 * Testing the preserved key desc sorting
 	 */
-	public function testValues()
+	public function testARSort()
 	{
 		$collection = new Solution10\Collection\Collection(array(
 			'name' => 'Alex',
@@ -308,10 +346,15 @@ class CollectionTest extends Solution10\Tests\TestCase
 			'fave_food' => 'Chinese',
 		));
 		
+		$collection->sort(Solution10\Collection\Collection::SORT_DESC_PRESERVE_KEYS);
+		
+		$keys = $collection->keys();
+		$this->assertEquals('name', $keys[2]);
+		$this->assertEquals('job', $keys[0]);
+		
 		$values = $collection->values();
-		$this->assertEquals('Alex', $values[0]);
-		$this->assertEquals('Web Dev', $values[1]);
-		$this->assertEquals('Chinese', $values[2]);
+		$this->assertEquals('Alex', $values[2]);
+		$this->assertEquals('Web Dev', $values[0]);
 	}
 	
 }

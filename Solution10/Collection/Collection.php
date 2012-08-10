@@ -233,6 +233,29 @@ class Collection implements \Countable, \ArrayAccess, \Iterator
 	
 	
 	/**
+	 * Our implementation of array_keys(). Returns all the keys of the collection
+	 * in an array in the order that they appear.
+	 *
+	 * @return 	array
+	 */
+	public function keys()
+	{
+		return array_keys($this->contents);
+	}
+	
+	/**
+	 * Our implementation of array_values(). Returns all the values in the array
+	 * in the order that they appear, without keys.
+	 *
+	 * @return 	array
+	 */
+	public function values()
+	{
+		return array_values($this->contents);
+	}
+	
+	
+	/**
 	 * ---------------------------------- Sorting -----------------------------------
 	 */
 	

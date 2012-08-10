@@ -275,4 +275,43 @@ class CollectionTest extends Solution10\Tests\TestCase
 		$this->assertEquals('Orange', $collection[0]);
 	}
 	
+	
+	/**
+	 * ----------------- Keys and Values Tests ------------------------
+	 */
+	
+	/**
+	 * Testing keys()
+	 */
+	public function testKeys()
+	{
+		$collection = new Solution10\Collection\Collection(array(
+			'name' => 'Alex',
+			'job' => 'Web Dev',
+			'fave_food' => 'Chinese',
+		));
+		
+		$keys = $collection->keys();
+		$this->assertEquals('name', $keys[0]);
+		$this->assertEquals('job', $keys[1]);
+		$this->assertEquals('fave_food', $keys[2]);
+	}
+	
+	/**
+	 * Testing values()
+	 */
+	public function testValues()
+	{
+		$collection = new Solution10\Collection\Collection(array(
+			'name' => 'Alex',
+			'job' => 'Web Dev',
+			'fave_food' => 'Chinese',
+		));
+		
+		$values = $collection->values();
+		$this->assertEquals('Alex', $values[0]);
+		$this->assertEquals('Web Dev', $values[1]);
+		$this->assertEquals('Chinese', $values[2]);
+	}
+	
 }

@@ -290,12 +290,96 @@ class Collection implements \Countable, \ArrayAccess, \Iterator
 			break;
 			
 			default:
-				throw new Exception('Unknown sort direction: ' . $direction);
+				throw new Exception\Exception('Unknown sort direction: ' . $direction);
 			break;
 		}
 		
 		return $this;
 	}
 	
-	
+	/**
+	 * Sorting by a member of the collection contents. Works on keyed arrays, object members, and the
+	 * result of functions on an object.
+	 *
+	 * If the member cannot be found on each and every item in the collection, an Exception will be thrown.
+	 *
+	 * @param 	string 	Key name, member name or function name to sort by.
+	 * @param 	int 	Sort direction (use class constants)
+	 * @param 	int 	Sort flags (see http://php.net/sort)
+	 * @return 	this
+	 * @throws 	Solution10\Collection\Exception
+	 */
+	public function sort_by_member($member, $direction, $flags = SORT_REGULAR)
+	{
+		// Build up an array to sort using asort or arsort.
+		$arr_to_sort = array();
+		foreach($this->contents as $key => $item)
+		{
+			if(is_array($item))
+			{
+				if(!array_key_exists($member, $item))
+					throw new Exception\Index('Unknown Array Index "' . $member . '" in item with key: "' . $key . '"');
+				
+				$arr_to_sort[$key] = $item[$member];
+			}
+			elseif(is_object($item))
+			{
+				if(property_exists($item, $member) && !($item->$member instanceof \Closure))
+				{
+					$arr_to_sort[$key] = $item->$member;
+				}
+				elseif(method_exists($item, $member))
+				{
+					$arr_to_sort[$key] = $item->$member();
+				}
+				elseif($item->$member instanceof \Closure)
+				{
+					$func = $item->$member;
+					$arr_to_sort[$key] = $func();
+				}
+				else
+				{
+					throw new Exception\Index('Unknown Object Member/Method "' . $member . '" in item with key: "' . $key . '"');
+				}
+			}
+		}
+		
+		// Perform the sort:
+		switch($direction)
+		{
+			case self::SORT_ASC:
+			case self::SORT_ASC_PRESERVE_KEYS:
+				asort($arr_to_sort, $flags);
+			break;
+			
+			case self::SORT_DESC:
+			case self::SORT_DESC_PRESERVE_KEYS:
+				arsort($arr_to_sort, $flags);
+			break;
+			
+			default:
+				throw new Exception\Exception('Unknown sort direction: ' . $direction);
+			break;
+		}
+		
+		// Rebuild the collection in the new order:
+		$new_contents = array();
+		foreach($arr_to_sort as $key => $not_used_sorted_value)
+		{
+			switch($direction)
+			{
+				case self::SORT_ASC_PRESERVE_KEYS:
+				case self::SORT_DESC_PRESERVE_KEYS:
+					$new_contents[$key] = $this->contents[$key];
+				break;
+				
+				default:
+					$new_contents[] = $this->contents[$key];
+				break;
+			}
+		}
+		
+		$this->contents = $new_contents;
+		return $this;
+	}
 }

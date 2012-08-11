@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * This class is used for some of the sorting tests:
+ */
+class Person
+{
+	public $name;
+	public $job;
+	public function sort()
+	{
+		return $this->name;
+	}
+}
+
+
+
 class CollectionTest extends Solution10\Tests\TestCase
 {
 	public $collection;
@@ -357,4 +372,303 @@ class CollectionTest extends Solution10\Tests\TestCase
 		$this->assertEquals('Web Dev', $values[0]);
 	}
 	
+	
+	/**
+	 * Sorting by an array member asc test
+	 */
+	public function testArrayMemberAscSort()
+	{
+		$collection = new Solution10\Collection\Collection(array(
+			array(
+				'name' => 'Kelly',
+				'job' => 'Manager',
+			),
+			array(
+				'name' => 'Alex',
+				'job' => 'Developer',
+			),
+			array(
+				'name' => 'Jimmy',
+				'job' => 'Tester',
+			),
+		));
+		
+		$collection->sort_by_member('name', Solution10\Collection\Collection::SORT_ASC);
+		$this->assertEquals('Alex', $collection[0]['name']);
+		$this->assertEquals('Developer', $collection[0]['job']);
+		$this->assertEquals('Kelly', $collection[2]['name']);
+		$this->assertEquals('Manager', $collection[2]['job']);
+	}
+	
+	/**
+	 * Sorting by an array member desc test
+	 */
+	public function testArrayMemberDescSort()
+	{
+		$collection = new Solution10\Collection\Collection(array(
+			array(
+				'name' => 'Kelly',
+				'job' => 'Manager',
+			),
+			array(
+				'name' => 'Alex',
+				'job' => 'Developer',
+			),
+			array(
+				'name' => 'Jimmy',
+				'job' => 'Tester',
+			),
+		));
+		
+		$collection->sort_by_member('name', Solution10\Collection\Collection::SORT_DESC);
+		$this->assertEquals('Alex', $collection[2]['name']);
+		$this->assertEquals('Developer', $collection[2]['job']);
+		$this->assertEquals('Kelly', $collection[0]['name']);
+		$this->assertEquals('Manager', $collection[0]['job']);
+	}
+	
+	
+	/**
+	 * Sorting by an object member asc test
+	 */
+	public function testObjMemberAscSort()
+	{
+		$obj1 = new stdClass();
+		$obj1->name = 'Kelly';
+		$obj1->job = 'Manager';
+		
+		$obj2 = new stdClass();
+		$obj2->name = 'Alex';
+		$obj2->job = 'Developer';
+		
+		$obj3 = new stdClass();
+		$obj3->name = 'Jimmy';
+		$obj3->job = 'Tester';
+	
+		$collection = new Solution10\Collection\Collection(array(
+			$obj1, $obj2, $obj3,
+		));
+		
+		$collection->sort_by_member('name', Solution10\Collection\Collection::SORT_ASC);
+		$this->assertEquals('Alex', $collection[0]->name);
+		$this->assertEquals('Developer', $collection[0]->job);
+		$this->assertEquals('Kelly', $collection[2]->name);
+		$this->assertEquals('Manager', $collection[2]->job);
+	}
+	
+	/**
+	 * Sorting by an object member desc test
+	 */
+	public function testObjMemberDescSort()
+	{
+		$obj1 = new stdClass();
+		$obj1->name = 'Kelly';
+		$obj1->job = 'Manager';
+		
+		$obj2 = new stdClass();
+		$obj2->name = 'Alex';
+		$obj2->job = 'Developer';
+		
+		$obj3 = new stdClass();
+		$obj3->name = 'Jimmy';
+		$obj3->job = 'Tester';
+	
+		$collection = new Solution10\Collection\Collection(array(
+			$obj1, $obj2, $obj3,
+		));
+		
+		$collection->sort_by_member('name', Solution10\Collection\Collection::SORT_DESC);
+		$this->assertEquals('Alex', $collection[2]->name);
+		$this->assertEquals('Developer', $collection[2]->job);
+		$this->assertEquals('Kelly', $collection[0]->name);
+		$this->assertEquals('Manager', $collection[0]->job);
+	}
+	
+	/**
+	 * Sorting by an object closure asc test
+	 */
+	public function testObjClosureAscSort()
+	{
+		$obj1 = new stdClass();
+		$obj1->name = 'Kelly';
+		$obj1->job = 'Manager';
+		$obj1->sort = function()
+		{
+			return 'Orange';	
+		};
+		
+		$obj2 = new stdClass();
+		$obj2->name = 'Alex';
+		$obj2->job = 'Developer';
+		$obj2->sort = function()
+		{
+			return 'Apple';	
+		};
+		
+		$obj3 = new stdClass();
+		$obj3->name = 'Jimmy';
+		$obj3->job = 'Tester';
+		$obj3->sort = function()
+		{
+			return 'Banana';	
+		};
+	
+		$collection = new Solution10\Collection\Collection(array(
+			$obj1, $obj2, $obj3,
+		));
+		
+		$collection->sort_by_member('sort', Solution10\Collection\Collection::SORT_ASC);
+		$this->assertEquals('Alex', $collection[0]->name);
+		$this->assertEquals('Developer', $collection[0]->job);
+		$this->assertEquals('Kelly', $collection[2]->name);
+		$this->assertEquals('Manager', $collection[2]->job);
+	}
+	
+	/**
+	 * Sorting by an object closure desc test
+	 */
+	public function testObjClosureDescSort()
+	{
+		$obj1 = new stdClass();
+		$obj1->name = 'Kelly';
+		$obj1->job = 'Manager';
+		$obj1->sort = function()
+		{
+			return 'Orange';	
+		};
+		
+		$obj2 = new stdClass();
+		$obj2->name = 'Alex';
+		$obj2->job = 'Developer';
+		$obj2->sort = function()
+		{
+			return 'Apple';	
+		};
+		
+		$obj3 = new stdClass();
+		$obj3->name = 'Jimmy';
+		$obj3->job = 'Tester';
+		$obj3->sort = function()
+		{
+			return 'Banana';	
+		};
+	
+		$collection = new Solution10\Collection\Collection(array(
+			$obj1, $obj2, $obj3,
+		));
+		
+		$collection->sort_by_member('sort', Solution10\Collection\Collection::SORT_DESC);
+		$this->assertEquals('Alex', $collection[2]->name);
+		$this->assertEquals('Developer', $collection[2]->job);
+		$this->assertEquals('Kelly', $collection[0]->name);
+		$this->assertEquals('Manager', $collection[0]->job);
+	}
+	
+	/**
+	 * Sorting by an object method asc test
+	 */
+	public function testObjMethodAscSort()
+	{
+		$obj1 = new Person();
+		$obj1->name = 'Kelly';
+		$obj1->job = 'Manager';
+		
+		$obj2 = new Person();
+		$obj2->name = 'Alex';
+		$obj2->job = 'Developer';
+		
+		$obj3 = new Person();
+		$obj3->name = 'Jimmy';
+		$obj3->job = 'Tester';
+	
+		$collection = new Solution10\Collection\Collection(array(
+			$obj1, $obj2, $obj3,
+		));
+		
+		$collection->sort_by_member('sort', Solution10\Collection\Collection::SORT_ASC);
+		$this->assertEquals('Alex', $collection[0]->name);
+		$this->assertEquals('Developer', $collection[0]->job);
+		$this->assertEquals('Kelly', $collection[2]->name);
+		$this->assertEquals('Manager', $collection[2]->job);
+	}
+	
+	/**
+	 * Sorting by an object method desc test
+	 */
+	public function testObjMethodDescSort()
+	{
+		$obj1 = new Person();
+		$obj1->name = 'Kelly';
+		$obj1->job = 'Manager';
+		
+		$obj2 = new Person();
+		$obj2->name = 'Alex';
+		$obj2->job = 'Developer';
+		
+		$obj3 = new Person();
+		$obj3->name = 'Jimmy';
+		$obj3->job = 'Tester';
+	
+		$collection = new Solution10\Collection\Collection(array(
+			$obj1, $obj2, $obj3,
+		));
+		
+		$collection->sort_by_member('sort', Solution10\Collection\Collection::SORT_DESC);
+		$this->assertEquals('Alex', $collection[2]->name);
+		$this->assertEquals('Developer', $collection[2]->job);
+		$this->assertEquals('Kelly', $collection[0]->name);
+		$this->assertEquals('Manager', $collection[0]->job);
+	}
+	
+	/**
+	 * Testing array member preserved keys sorting asc
+	 */
+	public function testArrayMemberAscSortPreserveKeys()
+	{
+		$collection = new Solution10\Collection\Collection(array(
+			'apple' => array(
+				'name' => 'Kelly',
+				'job' => 'Manager',
+			),
+			'orange' => array(
+				'name' => 'Alex',
+				'job' => 'Developer',
+			),
+			'banana' => array(
+				'name' => 'Jimmy',
+				'job' => 'Tester',
+			),
+		));
+		
+		$collection->sort_by_member('name', Solution10\Collection\Collection::SORT_ASC_PRESERVE_KEYS);
+		$keys = $collection->keys();
+		$this->assertEquals('orange', $keys[0]);
+		$this->assertEquals('apple', $keys[2]);
+	}
+
+	/**
+	 * Testing array member preserved keys sorting desc
+	 */
+	public function testArrayMemberDescSortPreserveKeys()
+	{
+		$collection = new Solution10\Collection\Collection(array(
+			'apple' => array(
+				'name' => 'Kelly',
+				'job' => 'Manager',
+			),
+			'orange' => array(
+				'name' => 'Alex',
+				'job' => 'Developer',
+			),
+			'banana' => array(
+				'name' => 'Jimmy',
+				'job' => 'Tester',
+			),
+		));
+		
+		$collection->sort_by_member('name', Solution10\Collection\Collection::SORT_DESC_PRESERVE_KEYS);
+		$keys = $collection->keys();
+		$this->assertEquals('orange', $keys[2]);
+		$this->assertEquals('apple', $keys[0]);
+	}
 }

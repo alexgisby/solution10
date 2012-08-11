@@ -269,7 +269,7 @@ class Collection implements \Countable, \ArrayAccess, \Iterator
 	 * @param 	int 	Sort flags (see http://php.net/sort)
 	 * @return 	this
 	 */
-	public function sort($direction, $flags = SORT_REGULAR)
+	public function sort($direction = \Solution10\Collection\Collection::SORT_ASC, $flags = SORT_REGULAR)
 	{
 		switch($direction)
 		{
@@ -304,12 +304,12 @@ class Collection implements \Countable, \ArrayAccess, \Iterator
 	 * If the member cannot be found on each and every item in the collection, an Exception will be thrown.
 	 *
 	 * @param 	string 	Key name, member name or function name to sort by.
-	 * @param 	int 	Sort direction (use class constants)
+	 * @param 	int 	Sort direction (use class constants) default ASC.
 	 * @param 	int 	Sort flags (see http://php.net/sort)
 	 * @return 	this
 	 * @throws 	Solution10\Collection\Exception
 	 */
-	public function sort_by_member($member, $direction, $flags = SORT_REGULAR)
+	public function sort_by_member($member, $direction = \Solution10\Collection\Collection::SORT_ASC, $flags = SORT_REGULAR)
 	{
 		// Build up an array to sort using asort or arsort.
 		$arr_to_sort = array();
@@ -332,7 +332,7 @@ class Collection implements \Countable, \ArrayAccess, \Iterator
 				{
 					$arr_to_sort[$key] = $item->$member();
 				}
-				elseif($item->$member instanceof \Closure)
+				elseif(property_exists($item, $member) && $item->$member instanceof \Closure)
 				{
 					$func = $item->$member;
 					$arr_to_sort[$key] = $func();

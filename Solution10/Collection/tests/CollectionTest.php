@@ -671,4 +671,94 @@ class CollectionTest extends Solution10\Tests\TestCase
 		$this->assertEquals('orange', $keys[2]);
 		$this->assertEquals('apple', $keys[0]);
 	}
+	
+	/**
+	 * Testing unknown sort exceptions
+	 *
+	 * @expectedException Solution10\Collection\Exception\Exception
+	 */
+	public function testBadSortDirection()
+	{
+		$collection = new Solution10\Collection\Collection(array(
+			'Apple', 'Orange', 'Banana',
+		));
+		
+		$collection->sort(999);
+	}
+	
+	/**
+	 * Testing unknown sort_by_member exceptions
+	 *
+	 * @expectedException Solution10\Collection\Exception\Exception
+	 */
+	public function testBadMemberSortDirection()
+	{
+		$collection = new Solution10\Collection\Collection(array(
+			'apple' => array(
+				'name' => 'Kelly',
+				'job' => 'Manager',
+			),
+			'orange' => array(
+				'name' => 'Alex',
+				'job' => 'Developer',
+			),
+			'banana' => array(
+				'name' => 'Jimmy',
+				'job' => 'Tester',
+			),
+		));
+		
+		$collection->sort_by_member('name', 999);
+	}
+	
+	/**
+	 * Testing unknown array member exceptions
+	 *
+	 * @expectedException Solution10\Collection\Exception\Index
+	 */
+	public function testBadArrayMemberSort()
+	{
+		$collection = new Solution10\Collection\Collection(array(
+			'apple' => array(
+				'name' => 'Kelly',
+				'job' => 'Manager',
+			),
+			'orange' => array(
+				'name' => 'Alex',
+				'job' => 'Developer',
+			),
+			'banana' => array(
+				'name' => 'Jimmy',
+				'job' => 'Tester',
+			),
+		));
+		
+		$collection->sort_by_member('unknown');
+	}
+	
+	/**
+	 * Testing unknown object property sorting
+	 *
+	 * @expectedException Solution10\Collection\Exception\Index
+	 */
+	public function testBadObjectMemberSort()
+	{
+		$obj1 = new Person();
+		$obj1->name = 'Kelly';
+		$obj1->job = 'Manager';
+		
+		$obj2 = new Person();
+		$obj2->name = 'Alex';
+		$obj2->job = 'Developer';
+		
+		$obj3 = new Person();
+		$obj3->name = 'Jimmy';
+		$obj3->job = 'Tester';
+	
+		$collection = new Solution10\Collection\Collection(array(
+			$obj1, $obj2, $obj3,
+		));
+		
+		$collection->sort_by_member('unknown');
+	}
 }

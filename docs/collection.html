@@ -17,7 +17,7 @@
 		padding: 9px 0;
 		}
 		</style>
-		<link href="bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+		<link href="google-code-prettify/prettify.css" rel="stylesheet">
 	
 		<!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
 		<!--[if lt IE 9]>
@@ -25,7 +25,7 @@
 		<![endif]-->
 	</head>
 
-	<body>
+	<body onload="prettyPrint();">
 
 		<div class="navbar navbar-fixed-top">
 			<div class="navbar-inner">
@@ -35,7 +35,7 @@
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
 					</a>
-					<a class="brand" href="#">Solution10</a>
+					<a class="brand" href="#">lib.Solution10</a>
 					<div class="nav-collapse">
 						<ul class="nav">
 							<li><a href="index.html">Introduction</a></li>
@@ -66,15 +66,17 @@
 					
 					<h2 id="basics">Creating and Populating</h2>
 					<p>Creating an instance of Collection is simple:</p>
-					<pre><code>// Create a new, empty collection:
+					<pre class="prettyprint">
+// Create a new, empty collection:
 $collection = new Solution10\Collection\Collection();
 
 // Create a collection from an array:
-$collection = new Solution10\Collection\Collection(array('Hello', 'World'));</code></pre>
+$collection = new Solution10\Collection\Collection(array('Hello', 'World'));</pre>
 					
 					<p>To add items into the collection, you simply use the same syntax you would an array:</p>
 					
-					<pre><code>$collection = new Solution10\Collection\Collection();
+					<pre class="prettyprint">
+$collection = new Solution10\Collection\Collection();
 $collection[] = 'Hello';
 $collection[] = 'Beautiful';
 $collection[20] = 'World';
@@ -86,32 +88,32 @@ $collection[20] = 'World';
 		1 => 'Beautiful',
 		20 => 'World'
 	)
-*/</code></pre>
+*/</pre>
 
 					<div class="alert alert-info">
 						<i class="icon-info-sign"></i>
 						To keep the docs brief, from now on we'll assume your using the
 						Solution10\Collection namespace in the file like so:
-						<pre><code>use \Solution10\Collection; </code></pre>
+						<pre class="prettyprint">use \Solution10\Collection;</pre>
 					</div>
 
 					<p>You can overwrite elements in the array just like you would a normal array:</p>
 					
-					<pre><code>$collection = new Collection();
+					<pre class="prettyprint">$collection = new Collection();
 $collection[] = 'Hello';
 $collection[] = 'World';
 
 // Change the first item to Goodbye:
-$collection[0] = 'Goodbye';</code></pre>
+$collection[0] = 'Goodbye';</pre>
 
 					<p>And finally, unset() works exactly how you would imagine, removing an item from the collection.</p>
 
-					<pre><code>$collection = new Collection();
+					<pre class="prettyprint">$collection = new Collection();
 $collection[] = 'Hello';
 $collection[] = 'World';
 unset($collection[1]);
 
-// Collection now just contains 'Hello'</code></pre>
+// Collection now just contains 'Hello'</pre>
 					
 					<h2>Looping and Counting</h2>
 					
@@ -119,7 +121,7 @@ unset($collection[1]);
 					
 					<p>To loop (or iterate) over a collection, just use a foreach:</p>
 					
-					<pre><code>$collection = new Collection();
+					<pre class="prettyprint">$collection = new Collection();
 $collection['name'] = 'Alex';
 $collection['role'] = 'Admin';
 
@@ -134,11 +136,196 @@ foreach($collection as $key => $value)
 
 					<p>To count how many items are in a collection, we can use count():</p>
 					
-					<pre><code>$collection = new Collection(array('Apple', 'Orange', 'Banana', 'Grapes'));
-echo count($collection); // Outputs 4</pre></code>
+					<pre class="prettyprint">$collection = new Collection(array('Apple', 'Orange', 'Banana', 'Grapes'));
+echo count($collection); // Outputs 4</pre>
 
 
-					<h2>Splicing</h2>
+					<h2 id="splicing">Splicing</h2>
+					
+					<p>Splicing allows you to quickly retrieve a subset of the collection based on its numeric indexes. If it's numerically indexed that is.</p>
+					
+					<h3 id="splicing-basics">Basic Splicing</h3>
+					
+					<p>Splicing involves accessing a key in the Collection of the format <code>start:end</code> where start and end are numeric indexes in the collection.</p>
+					
+					<div class="alert alert-info">
+						<i class="icon-info-sign"></i>
+						<strong>Splicing is 1-indexed!</strong><br />
+						So asking for 1:1 will grab the first element. 1:2 will grab the first two elements. etc
+					</div>
+					
+					<pre class="prettyprint">
+$collection = new Collection(array('Apple', 'Orange', 'Banana'));
+$subset = $collection['1:2'];
+
+// $subset is now: array('Apple', 'Orange')</pre>
+					
+					<p>Collections allow for 'over-the-end' splicing, where if the end index is greater than the length, it'll just take everything up to the end:</p>
+					<pre class="prettyprint">
+$collection = new Collection(array('Apple', 'Orange', 'Banana'));
+$subset = $collection['1:100'];
+
+// $subset</code> contains array('Orange', 'Banana')</pre>
+
+					<p>
+						You can use negative splicing too to grab elements from the end of the Collection. The Collection will count backwards the number
+						of negative steps and start counting from there.
+					</p>
+					
+					<pre class="prettyprint">
+$collection = new Collection(array('Apple', 'Orange', 'Banana'));
+$subset = $collection['-2:2'];
+					
+// $subset contains ('Orange', 'Banana')</pre>
+
+					<div class="alert alert-info">
+						<i class="icon-info-sign"></i>
+						Note that the <code>end</code> index is still counted from the start of the array! You should instead use the <code>END</code> keyword
+						outlined below to grab say the last three elements of the collection.
+					</div>
+
+					<h3 id="splicing-keywords">Splicing Keywords</h3>
+					
+					<p>
+						Sometimes you won't know how many items are in the Collection, or just want to make it explicit that you want everything after a certain
+						point. For this, you should use the <code>END</code> keyword.
+					</p>
+					
+					<pre class="prettyprint">
+$collection = new Collection(array('Apple', 'Orange', 'Banana', 'Grapes'));
+$subset = $collection['2:END'];
+
+// $subset contains ('Orange', 'Banana', 'Grapes')</pre>
+
+					<p>There's also a shortcut to fetching the last item in the collection, the <code>LAST</code> keyword:</p>
+					
+					<pre class="prettyprint">
+$collection = new Collection(array('Apple', 'Orange', 'Banana', 'Grapes'));
+$subset = $collection[':LAST'];
+
+// $subset is simply array('Grapes')</pre>
+
+					<h3 id="splicing-exceptions">Splicing Exceptions</h3>
+					
+					<p>The following table is the Exceptions which can be thrown by Collection around splicing:</p>
+					
+					<table class="table table-striped table-bordered">
+						<thead>
+							<tr>
+								<th>Exception</th>
+								<th>Reason</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>Solution10\Collection\Exception\Bounds</td>
+								<td>
+									<ul>
+										<li>Asking for a <code>start</code> value greater than the count() of the Collection</li>
+										<li>Asking for a <code>start</code> index greater than <code>end</code></li>
+									</ul>
+								</td>
+							</tr>
+							<tr>
+								<td>Solution10\Collection\Exception\Index</td>
+								<td>
+									<ul>
+										<li>Asking for an unknown index</li>
+									</ul>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+
+					<h2 id="sorting">Sorting</h2>
+					
+					<p>
+						Collections allow you to sort their contents just like they are real arrays. You can also sort by a property of the items within
+						the collection! Basics first.
+					</p>
+					
+					<h3 id="sorting-basic">Sorting Basics</h3>
+					
+					<p>Sorting uses the same flags as PHP's <a href="http://php.net/sort">sort() family</a> of functions.</p>
+					
+					<p>To dictate direction, you need to use the following constants:</p>
+					
+					<table class="table table-striped table-bordered">
+						<thead>
+							<tr>
+								<th>Constant</th>
+								<th>Description</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>Solution10\Collection\Collection::SORT_ASC</td>
+								<td>
+									Sort the items in Ascending order, rebuilding the keys.
+								</td>
+							</tr>
+							<tr>
+								<td>Solution10\Collection\Collection::SORT_DESC</td>
+								<td>
+									Sort the items in Descending order, rebuilding the keys.
+								</td>
+							</tr>
+							<tr>
+								<td>Solution10\Collection\Collection::SORT_ASC_PRESERVE_KEYS</td>
+								<td>
+									Sort the items in Ascending order, maintaining key => value association.
+								</td>
+							</tr>
+							<tr>
+								<td>Solution10\Collection\Collection::SORT_DESC_PRESERVE_KEYS</td>
+								<td>
+									Sort the items in Descending order, maintaining key => value association.
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					
+					<pre class="prettyprint">
+$collection = new Collection(array(100, 50, 70, 10));
+$collection->sort(Collection::SORT_ASC);
+
+// $collection's order is now: 10, 50, 70, 100
+
+// You can pass in sort() flags like so:
+$collection->sort(Collection::SORT_ASC, SORT_NUMERIC);</pre>
+
+					<h3 id="sorting-member">Sorting by Member</h3>
+					
+					<p>
+						You can sort the contents of a Collection by some data value within the collections contents! This can be either:
+						<ul>
+							<li>A keyed item in a multi-d array</li>
+							<li>A property on all objects in the Collection</li>
+							<li>The result of a function call on all objects within the Collection.</li>
+						</ul>
+					</p>
+					
+					<p>So, for example:</p>
+					
+					<pre class="prettyprint">
+$collection = new Collection(array(
+	array(
+		'name' => 'Sarah',
+		'job' => 'Manager',
+	),
+	array(
+		'name' => 'Alex',
+		'job' => 'Developer',
+	),
+	array(
+		'name' => 'Tracy',
+		'job' => 'HR'
+	),
+));
+
+$collection->sort_by_member('name', Collection::SORT_ASC);
+
+// The collection now has the array('name' => 'Alex' ...) item first and the array('name' => 'Tracy' ...) item last!</pre>
 
 				</div>
 				<div class="span3">
@@ -156,6 +343,18 @@ echo count($collection); // Outputs 4</pre></code>
 							</li>
 							<li>
 								<a href="#splicing">Splicing</a>
+								<ul>
+									<li><a href="#splicing-basic">Basic Splicing</a></li>
+									<li><a href="#splicing-keyword">Splicing Keywords</a></li>
+									<li><a href="#splicing-exceptions">Splicing Exceptions</a></li>
+								</ul>
+							</li>
+							<li>
+								<a href="#sorting">Sorting</a>
+								<ul>
+									<li><a href="#sorting-basic">Sorting Basics</a></li>
+									<li><a href="#sorting-member">Sorting by Member</a></li>
+								</ul>
 							</li>
 						</ul>
 					</div>
@@ -170,8 +369,9 @@ echo count($collection); // Outputs 4</pre></code>
 	
 		</div><!--/.fluid-container-->
 
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
 		<script src="bootstrap/js/bootstrap.min.js"></script>
+		<script src="google-code-prettify/prettify.js"></script>
 
 	</body>
 </html>

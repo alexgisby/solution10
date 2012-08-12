@@ -291,6 +291,22 @@ class CollectionTest extends Solution10\Tests\TestCase
 		$this->assertEquals('Chinese', $values[2]);
 	}
 	
+	/**
+	 * Testing to_array()
+	 */
+	public function testToArray()
+	{
+		$collection = new Solution10\Collection\Collection(array(
+			'Apple', 'Orange', 'Banana',
+		));
+		
+		$arr = $collection->to_array();
+		
+		$this->assertEquals('Apple', $arr[0]);
+		$this->assertEquals('Orange', $arr[1]);
+		$this->assertEquals('Banana', $arr[2]);
+	}
+	
 	
 	/**
 	 * ----------------- Sorting Tests ------------------------

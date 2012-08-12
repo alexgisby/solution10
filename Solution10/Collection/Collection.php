@@ -258,6 +258,18 @@ class Collection implements \Countable, \ArrayAccess, \Iterator
 	
 	
 	/**
+	 * Returns the collection unmolested into an array. If any sorting has taken place, you
+	 * are returned the sorted version of the array.
+	 *
+	 * @return 	array
+	 */
+	public function to_array()
+	{
+		return $this->contents;
+	}
+	
+	
+	/**
 	 * ---------------------------------- Sorting -----------------------------------
 	 */
 	

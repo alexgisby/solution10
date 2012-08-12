@@ -327,6 +327,87 @@ $collection->sort_by_member('name', Collection::SORT_ASC);
 
 // The collection now has the array('name' => 'Alex' ...) item first and the array('name' => 'Tracy' ...) item last!</pre>
 
+					<p>Sorting by a property in contained objects:</p>
+					
+					<pre class="prettyprint">
+$obj = new stdClass();
+$obj->name = 'Jenny';
+
+$obj2 = new stdClass();
+$obj2->name = 'Forest';
+
+$collection = new Collection(array(
+	$obj, $obj2
+));
+
+$collection->sort_by_member('name', Collection::SORT_ASC);
+
+// Forest is now first in the collection, with Jenny in second.</pre>
+					
+					<p>You can also sort by the result of a function:</p>
+					<pre class="prettyprint">
+class Product
+{
+	public $price;
+	
+	public function price_with_vat()
+	{
+		return $this->price * 1.20;
+	}
+}
+
+$product1 = new Product();
+$product1->price = 20.00;
+
+$product2 = new Product();
+$product2->price = 18.99;
+
+$collection = new Collection(array($product1, $product2));
+
+$collection->sort_by_member('price_with_vat', Collection::SORT_ASC);
+
+// $product2 is now first in the array with $product1 second.</pre>
+				
+				<h3 id="sorting-exceptions">Sorting Exceptions</h3>
+				
+				<p>The following exceptions can be thrown during sorting:</p>
+				
+				<table class="table table-striped table-bordered">
+						<thead>
+							<tr>
+								<th>Exception</th>
+								<th>Reason</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>Solution10\Collection\Exception\Exception</td>
+								<td>
+									<ul>
+										<li>Asking for an unknown sort direction.</li>
+									</ul>
+								</td>
+							</tr>
+							<tr>
+								<td>Solution10\Collection\Exception\Index</td>
+								<td>
+									<ul>
+										<li>Asking for a sort_by_member on an unknown index / property / function.</li>
+									</ul>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					
+					<h3 id="retrieving">Getting data back (keys and values)</h3>
+					
+					<p>If you need to get your data out of a collection and into a standard array, you can use:</p>
+					
+					<pre class="prettyprint">
+$collection->keys(); // Returns the keys of the collection in an array
+$collection->values(); // Returns the values (no keys) of the collection
+$collection->to_array(); // Returns the keys and values in a single array.</pre>
+
 				</div>
 				<div class="span3">
 					<div class="well sidebar-nav">
@@ -354,7 +435,11 @@ $collection->sort_by_member('name', Collection::SORT_ASC);
 								<ul>
 									<li><a href="#sorting-basic">Sorting Basics</a></li>
 									<li><a href="#sorting-member">Sorting by Member</a></li>
+									<li><a href="#sorting-exceptions">Sorting Exceptions</a></li>
 								</ul>
+							</li>
+							<li>
+								<a href="#retrieving">Getting data back (keys and values)</a>
 							</li>
 						</ul>
 					</div>

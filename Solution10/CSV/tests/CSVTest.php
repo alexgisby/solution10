@@ -9,6 +9,11 @@ class CSVTest extends Solution10\Tests\TestCase
 	 * @var 	CSV 	Test csv as it's used everywhere
 	 */
 	protected $csv;
+
+	/**
+	 * Output filename
+	 */
+	protected $output_filename = 'Solution10/CSV/tests/data/output.csv';
 	
 	/**
 	 * Set up the tests
@@ -16,6 +21,9 @@ class CSVTest extends Solution10\Tests\TestCase
 	public function setUp()
 	{
 		$this->csv = new Solution10\CSV\CSV('Solution10/CSV/tests/data/test.csv');
+
+		// Remove the output.csv file:
+		@unlink($this->output_filename);
 	}
 	
 	/**
@@ -225,5 +233,25 @@ class CSVTest extends Solution10\Tests\TestCase
 		$this->assertTrue(array_key_exists('email', $errors[3]));
 	}
 	
-	
+	/**
+	 * Testing writing CSV files
+	 */
+	public function testBasicWrite()
+	{
+		$filename = $this->output_filename;
+
+		$testdata = array(
+			'Lucie', 27, 'lucie@example.com'
+		);
+
+		$csv = new Solution10\CSV\CSV();
+		$csv[] = $testdata;
+
+		$csv->write($filename);
+		$this->assertTrue(file_exists($filename));
+
+		$readcsv = new Solution10\CSV\CSV($filename);
+		$this->assertEquals(1, count($readcsv));
+		$this->assertEquals($testdata, $readcsv[0]);
+	}
 }

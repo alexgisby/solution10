@@ -149,4 +149,44 @@ class CSV extends \Solution10\Collection\Collection
 	{
 		return $this->validation_errors;
 	}
+
+
+	/**
+	 * Writing a file out.
+	 *
+	 * @param 	string 	Filepath to write to
+	 * @return 	bool
+	 * @throws 	Exception\File
+	 */
+	public function write($filename)
+	{
+		if(file_exists($filename))
+		{
+			// Check if the file is writeable:
+			if(!is_writable($filename))
+			{
+				throw new Exception\File($filepath, Exception\File::ERROR_WRITEABLE);
+			}
+		}
+		else
+		{
+			// Check if the directory is writeable:
+			$pathinfo = pathinfo($filename);
+			if(!is_writable($pathinfo['dirname']))
+			{
+				throw new Exception\File($filename, Exception\File::ERROR_WRITEABLE);
+			}
+		}
+
+		// Do the actual writing:
+		$f = fopen($filename, 'w');
+		foreach($this->to_array() as $row)
+		{
+			fputcsv($f, $row, $this->schema->delimiter, $this->schema->enclosure);
+		}
+
+		fclose($f);
+		return true;
+	}
+
 }

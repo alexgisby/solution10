@@ -286,7 +286,7 @@ class CSVTest extends Solution10\Tests\TestCase
 	public function testUnwriteableDirectory()
 	{
 		$csv = new Solution10\CSV\CSV();
-		$csv->write('Solution10/CSV/tests/data/bad_dir');
+		$csv->write('Solution10/CSV/tests/data/bad_dir/output.csv');
 	}
 
 }

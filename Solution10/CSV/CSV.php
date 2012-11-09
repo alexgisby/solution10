@@ -165,7 +165,7 @@ class CSV extends \Solution10\Collection\Collection
 			// Check if the file is writeable:
 			if(!is_writable($filename))
 			{
-				throw new Exception\File($filepath, Exception\File::ERROR_WRITEABLE);
+				throw new Exception\File($filename, Exception\File::ERROR_WRITE);
 			}
 		}
 		else
@@ -174,7 +174,7 @@ class CSV extends \Solution10\Collection\Collection
 			$pathinfo = pathinfo($filename);
 			if(!is_writable($pathinfo['dirname']))
 			{
-				throw new Exception\File($filename, Exception\File::ERROR_WRITEABLE);
+				throw new Exception\File($filename, Exception\File::ERROR_WRITE);
 			}
 		}
 

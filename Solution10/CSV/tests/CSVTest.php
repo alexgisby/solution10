@@ -24,6 +24,16 @@ class CSVTest extends Solution10\Tests\TestCase
 
 		// Remove the output.csv file:
 		@unlink($this->output_filename);
+		@mkdir('Solution10/CSV/tests/data/bad_dir', 100);
+		@chmod('Solution10/CSV/tests/data/bad_dir', 100);
+	}
+
+	/**
+	 * Teardown
+	 */
+	public function tearDown()
+	{
+		rmdir('Solution10/CSV/tests/data/bad_dir');
 	}
 	
 	/**
@@ -254,4 +264,29 @@ class CSVTest extends Solution10\Tests\TestCase
 		$this->assertEquals(1, count($readcsv));
 		$this->assertEquals($testdata, $readcsv[0]);
 	}
+
+	/**
+	 * Testing writing to a non-writeable file
+	 *
+	 * @expectedException 		Solution10\CSV\Exception\File
+	 * @expectedExceptionCode	3
+	 */
+	public function testUnwriteableFile()
+	{
+		$csv = new Solution10\CSV\CSV();
+		$csv->write('Solution10/CSV/tests/data/badfile.csv');
+	}
+
+	/**
+	 * Testing write to a bad directory
+	 *
+	 * @expectedException 		Solution10\CSV\Exception\File
+	 * @expectedExceptionCode	3 
+	 */
+	public function testUnwriteableDirectory()
+	{
+		$csv = new Solution10\CSV\CSV();
+		$csv->write('Solution10/CSV/tests/data/bad_dir');
+	}
+
 }

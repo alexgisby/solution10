@@ -32,5 +32,27 @@ class EventRegister
 		return $this;
 	}
 
-	
+	/**
+	 * Broadcast that an event is occuring.
+	 *
+	 * @param 	string 	Event Name
+	 * @param 	array 	Parameters to pass to callback functions.
+	 * @return 	this
+	 */
+	public function broadcast($event, array $params = array())
+	{
+		// Pass the name of the event as first param:
+		array_unshift($params, $event);
+
+		foreach($this->handlers[$event] as $handler)
+		{
+			if(is_callable($handler))
+			{
+				call_user_func_array($handler, $params);
+			}
+		}
+
+		return $this;
+	}
+
 }

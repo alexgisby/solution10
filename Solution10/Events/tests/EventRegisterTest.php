@@ -1,12 +1,22 @@
 <?php
 
+/**
+ * This mock is used to test the events system. The callbacks
+ * just change a public static variable which can then be verified.
+ */
 class InstanceMock
 {
-	public function callback()
-	{ }
+	public static $state;
 
-	public static function static_callback()
-	{ }
+	public function callback($event, $new_state)
+	{ 
+		self::$state = $new_state;
+	}
+
+	public static function static_callback($event, $new_state)
+	{
+		self::$state = $new_state;
+	}
 }
 
 /**
@@ -104,5 +114,26 @@ class EventRegisterTest extends Solution10\Tests\TestCase
 			$this->register->add_listener('test.register', $callback) instanceof Solution10\Events\EventRegister
 		);
 	}
+
+	/**
+	 * ------------------ Testing Broadcasting Events ---------------
+	 */
+
+	/**
+	 * Testing Basic Event Broadcast
+	 */
+	public function testMemberBroadcast()
+	{
+		$instance = $instance = new InstanceMock();
+		$callback = array($instance, 'callback');
+		$this->register->add_listener('test.memberbroadcast', $callback);
+
+		$this->register->broadcast('test.memberbroadcast', array(
+			'memberBroadcastState'
+		));
+
+		$this->assertEquals('memberBroadcastState', $instance::$state);
+	}
+
 
 }

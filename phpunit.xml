@@ -6,5 +6,8 @@
 		<testsuite name="Collection Tests">
 			<directory>Solution10/Collection/tests</directory>
 		</testsuite>
+		<testsuite name="Events Tests">
+			<directory>Solution10/Events/tests</directory>
+		</testsuite>
 	</testsuites>
 </phpunit>

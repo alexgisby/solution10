@@ -19,6 +19,11 @@ class InstanceMock
 	}
 }
 
+function functionMock($event, $new_state)
+{
+	InstanceMock::$state = $new_state;
+}
+
 /**
  * Tests for the Event Register
  */
@@ -120,6 +125,21 @@ class EventRegisterTest extends Solution10\Tests\TestCase
 	 */
 
 	/**
+	 * Test function callbacks on broadcast
+	 */
+	public function testFunctionBroadcast()
+	{
+		$callback = 'functionMock';
+		$this->register->add_listener('test.functionBroacast', $callback);
+
+		$this->register->broadcast('test.functionBroacast', array(
+			'functionBroadcastState'
+		));
+
+		$this->assertEquals('functionBroadcastState', InstanceMock::$state);
+	}
+
+	/**
 	 * Testing Basic Event Broadcast
 	 */
 	public function testMemberBroadcast()
@@ -135,5 +155,80 @@ class EventRegisterTest extends Solution10\Tests\TestCase
 		$this->assertEquals('memberBroadcastState', $instance::$state);
 	}
 
+	/**
+	 * Test static broadcast
+	 */
+	public function testStaticBroadcast()
+	{
+		$callback = array('InstanceMock', 'static_callback');
+		$this->register->add_listener('test.staticbroadcast', $callback);
+
+		$this->register->broadcast('test.staticbroadcast', array(
+			'staticBroadcastState'
+		));
+
+		$this->assertEquals('staticBroadcastState', InstanceMock::$state);
+	}
+
+	/**
+	 * Test static string broadcast
+	 */
+	public function testStaticStringBroadcast()
+	{
+		$callback = 'InstanceMock::static_callback';
+		$this->register->add_listener('test.staticstringbroadcast', $callback);
+
+		$this->register->broadcast('test.staticstringbroadcast', array(
+			'staticStringBroadcastState'
+		));
+
+		$this->assertEquals('staticStringBroadcastState', InstanceMock::$state);
+	}
+
+	/**
+	 * Testing anaonymous functions
+	 */
+	public function testAnonBroadcast()
+	{
+		$callback = function($event, $new_state)
+		{
+			InstanceMock::$state = $new_state;
+		};
+
+		$this->register->add_listener('test.anonbroadcast', $callback);
+
+		$this->register->broadcast('test.anonbroadcast', array(
+			'anonBroadcastState'
+		));
+
+		$this->assertEquals('anonBroadcastState', InstanceMock::$state);
+	}
+
+	/**
+	 * Testing multiple events on a broadcast
+	 */
+	public function testMultipleBroadcasts()
+	{
+		$callback1 = function($event, $new_state)
+		{
+			InstanceMock::$state = $new_state . '1';
+		};
+
+
+		$callback2 = function($event, $new_state)
+		{
+			InstanceMock::$state .= $new_state . '2';
+		};
+
+
+		$this->register->add_listener('test.multiplebroadcast', $callback1);
+		$this->register->add_listener('test.multiplebroadcast', $callback2);
+
+		$this->register->broadcast('test.multiplebroadcast', array(
+			'multipleBroadcast',
+		));
+
+		$this->assertEquals('multipleBroadcast1multipleBroadcast2', InstanceMock::$state);
+	}
 
 }

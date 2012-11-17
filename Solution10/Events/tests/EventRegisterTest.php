@@ -232,6 +232,15 @@ class EventRegisterTest extends Solution10\Tests\TestCase
 	}
 
 	/**
+	 * Testing firing an event that doesn't have any callbacks
+	 */
+	public function testEventNoCallbacks()
+	{
+		$this->register->broadcast('test.noCallbacks');
+		$this->assertTrue(true);
+	}
+
+	/**
 	 * Tests that an event object is passed into objects:
 	 */
 	public function testEventObject()
@@ -274,6 +283,57 @@ class EventRegisterTest extends Solution10\Tests\TestCase
 		$this->register->broadcast('test.eventStop');
 
 		$this->assertEquals('1', InstanceMock::$state);
+	}
+
+	/**
+	 * Testing basic finally
+	 */
+	public function testFinally()
+	{
+		$finally = function($event)
+		{
+			InstanceMock::$state = 'finally';
+		};
+
+		$this->register->finally('test.finally', $finally);
+		$this->register->broadcast('test.finally');
+
+		$this->assertEquals('finally', InstanceMock::$state);
+	}
+
+	/**
+	 * Testing that finally runs even when event is stopped
+	 */
+	public function testFinallyAfterStop()
+	{
+		$finally_fired = false;
+		$c1_fired = false;
+		$c2_fired = false;
+
+		$finally = function($event) use (&$finally_fired)
+		{
+			$finally_fired = true;
+		};
+
+		$c1 = function($event) use (&$c1_fired)
+		{
+			$c1_fired = true;
+			$event->stop();
+		};
+
+		$c2 = function($event) use (&$c2_fired)
+		{
+			$c2_fired = true;
+		};
+
+		$this->register->listen('test.finallyAfterStop', $c1);
+		$this->register->listen('test.finallyAfterStop', $c2);
+		$this->register->finally('test.finallyAfterStop', $finally);
+		$this->register->broadcast('test.finallyAfterStop');
+
+		$this->assertTrue($finally_fired);
+		$this->assertTrue($c1_fired);
+		$this->assertFalse($c2_fired);
 	}
 
 }

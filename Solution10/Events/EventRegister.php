@@ -23,10 +23,10 @@ class EventRegister
 	 * Register a handler for an event.
 	 *
 	 * @param 	string 		Event Name
-	 * @param 	callback  	Anything that can be considered a callback. String, array or lambda
+	 * @param 	callback 	Anything that can be considered a callback. String, array or lambda.
 	 * @return 	this 		Chainable.
 	 */
-	public function add_listener($event, $callback)
+	public function listen($event, $callback)
 	{
 		$this->handlers[$event][] = $callback;
 		return $this;

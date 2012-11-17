@@ -53,7 +53,7 @@ class EventRegisterTest extends Solution10\Tests\TestCase
 	public function testRegisterEventChainable()
 	{
 		$this->assertTrue(
-			$this->register->add_listener('test.register', 'foo') instanceof Solution10\Events\EventRegister
+			$this->register->listen('test.register', 'foo') instanceof Solution10\Events\EventRegister
 		);
 	}
 
@@ -65,7 +65,7 @@ class EventRegisterTest extends Solution10\Tests\TestCase
 		$callback = 'foo';
 
 		$this->assertTrue(
-			$this->register->add_listener('test.register', $callback) instanceof Solution10\Events\EventRegister
+			$this->register->listen('test.register', $callback) instanceof Solution10\Events\EventRegister
 		);
 	}
 
@@ -77,7 +77,7 @@ class EventRegisterTest extends Solution10\Tests\TestCase
 		$callback = array('InstanceMock', 'static_callback');
 
 		$this->assertTrue(
-			$this->register->add_listener('test.register', $callback) instanceof Solution10\Events\EventRegister
+			$this->register->listen('test.register', $callback) instanceof Solution10\Events\EventRegister
 		);
 	}
 
@@ -91,7 +91,7 @@ class EventRegisterTest extends Solution10\Tests\TestCase
 		$callback = array($instance, 'callback');
 
 		$this->assertTrue(
-			$this->register->add_listener('test.register', $callback) instanceof Solution10\Events\EventRegister
+			$this->register->listen('test.register', $callback) instanceof Solution10\Events\EventRegister
 		);
 	}
 
@@ -103,7 +103,7 @@ class EventRegisterTest extends Solution10\Tests\TestCase
 		$callback = 'InstanceMock::static_callback';
 
 		$this->assertTrue(
-			$this->register->add_listener('test.register', $callback) instanceof Solution10\Events\EventRegister
+			$this->register->listen('test.register', $callback) instanceof Solution10\Events\EventRegister
 		);
 	}
 
@@ -116,7 +116,7 @@ class EventRegisterTest extends Solution10\Tests\TestCase
 		{ };
 
 		$this->assertTrue(
-			$this->register->add_listener('test.register', $callback) instanceof Solution10\Events\EventRegister
+			$this->register->listen('test.register', $callback) instanceof Solution10\Events\EventRegister
 		);
 	}
 
@@ -130,7 +130,7 @@ class EventRegisterTest extends Solution10\Tests\TestCase
 	public function testFunctionBroadcast()
 	{
 		$callback = 'functionMock';
-		$this->register->add_listener('test.functionBroacast', $callback);
+		$this->register->listen('test.functionBroacast', $callback);
 
 		$this->register->broadcast('test.functionBroacast', array(
 			'functionBroadcastState'
@@ -146,7 +146,7 @@ class EventRegisterTest extends Solution10\Tests\TestCase
 	{
 		$instance = $instance = new InstanceMock();
 		$callback = array($instance, 'callback');
-		$this->register->add_listener('test.memberbroadcast', $callback);
+		$this->register->listen('test.memberbroadcast', $callback);
 
 		$this->register->broadcast('test.memberbroadcast', array(
 			'memberBroadcastState'
@@ -161,7 +161,7 @@ class EventRegisterTest extends Solution10\Tests\TestCase
 	public function testStaticBroadcast()
 	{
 		$callback = array('InstanceMock', 'static_callback');
-		$this->register->add_listener('test.staticbroadcast', $callback);
+		$this->register->listen('test.staticbroadcast', $callback);
 
 		$this->register->broadcast('test.staticbroadcast', array(
 			'staticBroadcastState'
@@ -176,7 +176,7 @@ class EventRegisterTest extends Solution10\Tests\TestCase
 	public function testStaticStringBroadcast()
 	{
 		$callback = 'InstanceMock::static_callback';
-		$this->register->add_listener('test.staticstringbroadcast', $callback);
+		$this->register->listen('test.staticstringbroadcast', $callback);
 
 		$this->register->broadcast('test.staticstringbroadcast', array(
 			'staticStringBroadcastState'
@@ -195,7 +195,7 @@ class EventRegisterTest extends Solution10\Tests\TestCase
 			InstanceMock::$state = $new_state;
 		};
 
-		$this->register->add_listener('test.anonbroadcast', $callback);
+		$this->register->listen('test.anonbroadcast', $callback);
 
 		$this->register->broadcast('test.anonbroadcast', array(
 			'anonBroadcastState'
@@ -221,8 +221,8 @@ class EventRegisterTest extends Solution10\Tests\TestCase
 		};
 
 
-		$this->register->add_listener('test.multiplebroadcast', $callback1);
-		$this->register->add_listener('test.multiplebroadcast', $callback2);
+		$this->register->listen('test.multiplebroadcast', $callback1);
+		$this->register->listen('test.multiplebroadcast', $callback2);
 
 		$this->register->broadcast('test.multiplebroadcast', array(
 			'multipleBroadcast',

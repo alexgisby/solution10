@@ -20,6 +20,11 @@ class Event
 	protected $event_name;
 
 	/**
+	 * @var 	bool 	Is the event stopped or not
+	 */
+	protected $is_stopped = false;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param 	string 	Event name
@@ -38,5 +43,23 @@ class Event
 	public function name()
 	{
 		return $this->event_name;
+	}
+
+	/**
+	 * Stop an event. This will prevent any other callbacks from firing.
+	 */
+	public function stop()
+	{
+		$this->is_stopped = true;
+	}
+
+	/**
+	 * Return if the event is stopped or not.
+	 *
+	 * @return 	bool
+	 */
+	public function is_stopped()
+	{
+		return $this->is_stopped;
 	}
 }

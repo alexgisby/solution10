@@ -251,4 +251,29 @@ class EventRegisterTest extends Solution10\Tests\TestCase
 		$this->assertEquals('test.eventObject', $event_name);
 	}
 
+	/**
+	 * Testing stopping an event
+	 */
+	public function testStoppingEvent()
+	{
+		$callback1 = function($event)
+		{
+			InstanceMock::$state = '1';
+			$event->stop();
+		};
+
+
+		$callback2 = function($event)
+		{
+			InstanceMock::$state = '2';
+		};
+
+		$this->register->listen('test.eventStop', $callback1);
+		$this->register->listen('test.eventStop', $callback2);
+
+		$this->register->broadcast('test.eventStop');
+
+		$this->assertEquals('1', InstanceMock::$state);
+	}
+
 }

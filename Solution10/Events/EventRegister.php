@@ -49,7 +49,7 @@ class EventRegister
 
 		foreach($this->handlers[$event_name] as $handler)
 		{
-			if(is_callable($handler))
+			if(is_callable($handler) && !$event->is_stopped())
 			{
 				call_user_func_array($handler, $params);
 			}

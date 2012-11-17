@@ -231,4 +231,24 @@ class EventRegisterTest extends Solution10\Tests\TestCase
 		$this->assertEquals('multipleBroadcast1multipleBroadcast2', InstanceMock::$state);
 	}
 
+	/**
+	 * Tests that an event object is passed into objects:
+	 */
+	public function testEventObject()
+	{
+		$is_event 	= false;
+		$event_name = '';
+
+		$callback = function($event) use (&$is_event, &$event_name) {
+			$is_event   = ($event instanceof Solution10\Events\Event);
+			$event_name = $event->name();
+		};
+
+		$this->register->listen('test.eventObject', $callback);
+		$this->register->broadcast('test.eventObject');
+
+		$this->assertTrue($is_event);
+		$this->assertEquals('test.eventObject', $event_name);
+	}
+
 }

@@ -39,12 +39,15 @@ class EventRegister
 	 * @param 	array 	Parameters to pass to callback functions.
 	 * @return 	this
 	 */
-	public function broadcast($event, array $params = array())
+	public function broadcast($event_name, array $params = array())
 	{
+		// Create the event object:
+		$event = new Event($event_name);
+
 		// Pass the name of the event as first param:
 		array_unshift($params, $event);
 
-		foreach($this->handlers[$event] as $handler)
+		foreach($this->handlers[$event_name] as $handler)
 		{
 			if(is_callable($handler))
 			{

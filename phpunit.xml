@@ -10,4 +10,10 @@
 			<directory>Solution10/Auth/tests/</directory>
 		</testsuite>
 	</testsuites>
+	<filter>
+		<blacklist>
+			<directory suffix=".php">Solution10/Auth/Tests</directory>
+			<directory suffix=".php">Solution10/Auth/vendor</directory>
+		</blacklist>
+	</filter>
 </phpunit>

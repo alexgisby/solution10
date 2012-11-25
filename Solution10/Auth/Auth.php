@@ -36,6 +36,11 @@ class Auth
 	protected $options;
 
 	/**
+	 * @var PasswordHash The Password hasher instance
+	 */
+	protected $hasher;
+
+	/**
 	 * Constructor. Pass in all the options for this instance, including all your
 	 * hashing and salting stuff.
 	 *
@@ -56,7 +61,10 @@ class Auth
 		if(!array_key_exists('phpass_cost', $options))
 			throw new Exception\Phpass('phpass Cost Value must be specified', Exception\Phpass::COST_NOT_SPECIFIED);
 
+		if(!array_key_exists('phpass_portable', $options))
+			$options['phpass_portable'] = false; // Sane default.
 
+		$this->hasher = new \PasswordHash($options['phpass_cost'], $options['phpass_portable']);
 	}
 
 	/**
@@ -68,11 +76,5 @@ class Auth
 	{
 		return $this->name;
 	}
-
-	/**
-	 * Attempt a login
-	 *
-	 * @param   [varname] [description]
-	 */
 
 }

@@ -24,6 +24,11 @@ class Auth
 	protected $persistent_store;
 
 	/**
+	 * @var 	StorageDelegate 	Storage Delegate implementation. DB access basically.
+	 */
+	protected $storage;
+
+	/**
 	 * @var array Options for this instance.
 	 */
 	protected $options;
@@ -34,13 +39,15 @@ class Auth
 	 *
 	 * @param 	string 			$name 				Name of this instance.
 	 * @param   PersistentStore $persistent_store 	The PersistentStore implementation for storing Session type data
+	 * @param   StorageDelegate $storage 			The StorageDelegate implementation for data access.
 	 * @param 	array 			$options 			Options. Must contain, err, something.
 	 * @return 	this
 	 */
-	public function __construct($name, PersistentStore $store, array $options)
+	public function __construct($name, PersistentStore $persistent_store, StorageDelegate $storage, array $options)
 	{
 		$this->name = $name;
-		$this->persistent_store = $store;
+		$this->persistent_store = $persistent_store;
+		$this->storage = $storage;
 		$this->options = $options;
 	}
 

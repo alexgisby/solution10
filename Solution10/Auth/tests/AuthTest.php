@@ -1,18 +1,32 @@
 <?php
 
 use Solution10\Auth\Auth as Auth;
+use Solution10\Auth\Tests\PersistentStoreMock as PersistentStoreMock;
 
 /**
  * Tests for the Auth class
  */
 class AuthTest extends Solution10\Tests\TestCase
 {
+	protected $default_instance;
+	protected $store_mock;
+
+	/**
+	 * Instantiates a basic instance:
+	 */
+	public function setUp()
+	{
+		$this->store_mock = new PersistentStoreMock();
+		$this->default_instance = new Auth('default', $this->store_mock, array());
+	}
+
 	/**
 	 * Test construction
 	 */
 	public function testConstructor()
 	{
-		$auth = new Auth('default', array());
+		$store = new PersistentStoreMock();
+		$auth = new Auth('default', $store, array());
 		$this->assertTrue($auth instanceof Auth);
 	}
 
@@ -21,7 +35,6 @@ class AuthTest extends Solution10\Tests\TestCase
 	 */
 	public function testName()
 	{
-		$auth = new Auth('default', array());
-		$this->assertEquals('default', $auth->name());
+		$this->assertEquals('default', $this->default_instance->name());
 	}
 }

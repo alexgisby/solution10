@@ -19,6 +19,11 @@ class Auth
 	protected $name;
 
 	/**
+	 * @var PersistentStore Instance of the PersistentStore interface (Session class basically)
+	 */
+	protected $persistent_store;
+
+	/**
 	 * @var array Options for this instance.
 	 */
 	protected $options;
@@ -27,13 +32,15 @@ class Auth
 	 * Constructor. Pass in all the options for this instance, including all your
 	 * hashing and salting stuff.
 	 *
-	 * @param string $name Name of this instance.
-	 * @param array $options Options. Must contain, err, something.
-	 * @return this
+	 * @param 	string 			$name 				Name of this instance.
+	 * @param   PersistentStore $persistent_store 	The PersistentStore implementation for storing Session type data
+	 * @param 	array 			$options 			Options. Must contain, err, something.
+	 * @return 	this
 	 */
-	public function __construct($name, array $options)
+	public function __construct($name, PersistentStore $store, array $options)
 	{
 		$this->name = $name;
+		$this->persistent_store = $store;
 		$this->options = $options;
 	}
 

@@ -23,7 +23,9 @@ class AuthTest extends Solution10\Tests\TestCase
 		$this->default_instance = new Auth('default', 
 										$this->persistent_mock, 
 										$this->storage_mock, 
-										array()
+										array(
+											'phpass_cost' => 8,
+										)
 								);
 	}
 
@@ -34,8 +36,21 @@ class AuthTest extends Solution10\Tests\TestCase
 	{
 		$store = new PersistentStoreMock();
 		$storage = new StorageDelegateMock();
-		$auth = new Auth('default', $store, $storage, array());
+		$auth = new Auth('default', $store, $storage, array(
+			'phpass_cost' => 8,
+		));
 		$this->assertTrue($auth instanceof Auth);
+	}
+
+	/**
+	 * Test error with phpass cost not specified
+	 *
+	 * @expectedException 		Solution10\Auth\Exception\Phpass
+	 * @expectedExceptionCode 	0
+	 */
+	public function testNoPhpassCost()
+	{
+		$auth = new Auth('default', $this->persistent_mock, $this->storage_mock, array());
 	}
 
 	/**
@@ -45,4 +60,5 @@ class AuthTest extends Solution10\Tests\TestCase
 	{
 		$this->assertEquals('default', $this->default_instance->name());
 	}
+
 }

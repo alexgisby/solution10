@@ -2,6 +2,8 @@
 
 namespace Solution10\Auth;
 
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor/phpass/PasswordHash.php';
+
 /**
  * Authentication Library.
  *
@@ -49,6 +51,12 @@ class Auth
 		$this->persistent_store = $persistent_store;
 		$this->storage = $storage;
 		$this->options = $options;
+
+		// Build up the phpass instance:
+		if(!array_key_exists('phpass_cost', $options))
+			throw new Exception\Phpass('phpass Cost Value must be specified', Exception\Phpass::COST_NOT_SPECIFIED);
+
+
 	}
 
 	/**
@@ -60,4 +68,11 @@ class Auth
 	{
 		return $this->name;
 	}
+
+	/**
+	 * Attempt a login
+	 *
+	 * @param   [varname] [description]
+	 */
+
 }

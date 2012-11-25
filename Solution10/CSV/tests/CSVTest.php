@@ -26,6 +26,11 @@ class CSVTest extends Solution10\Tests\TestCase
 		@unlink($this->output_filename);
 		@mkdir('Solution10/CSV/tests/data/bad_dir', 100);
 		@chmod('Solution10/CSV/tests/data/bad_dir', 100);
+
+		// Create the dud file:
+		@unlink('Solution10/CSV/tests/data/badfile.csv');
+		@touch('Solution10/CSV/tests/data/badfile.csv');
+		@chmod('Solution10/CSV/tests/data/badfile.csv', 100);
 	}
 
 	/**

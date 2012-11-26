@@ -88,4 +88,16 @@ class Auth
 		return $this->hasher->HashPassword($pass);
 	}
 
+	/**
+	 * Checks if a password matches the hashed variant
+	 *
+	 * @param string $password 	Password to check
+	 * @param string $hash 		Hash to check against
+	 * @return bool
+	 */
+	public function check_password($pass, $hash)
+	{
+		return $this->hasher->CheckPassword($pass, $hash);
+	}
+
 }

@@ -72,4 +72,14 @@ class AuthTest extends Solution10\Tests\TestCase
 		$this->assertEquals(0, strpos($hashed, '$2a'));
 	}
 
+	/**
+	 * Test password checking
+	 */
+	public function testPasswordCheck()
+	{
+		$pass = 'fjdggy744;0';
+		$hashed = $this->default_instance->hash_password($pass);
+		$this->assertTrue($this->default_instance->check_password($pass, $hashed));
+	}
+
 }

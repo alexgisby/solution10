@@ -135,7 +135,7 @@ class Auth
 	 */
 	public function logged_in()
 	{
-
+		return (bool)$this->persistent_store->auth_read($this->name());
 	}
 
 }

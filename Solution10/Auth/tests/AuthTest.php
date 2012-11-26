@@ -141,4 +141,48 @@ class AuthTest extends Solution10\Tests\TestCase
 		$this->assertFalse($auth->logged_in());
 	}
 
+	/**
+	 * Testing fetching the user
+	 */
+	public function testUser()
+	{
+		$auth = new Auth('default', $this->persistent_mock, $this->storage_mock, array(
+				'phpass_cost' => 8,
+			));
+
+		$auth->login('Alex', 'Alex');
+		$this->assertEquals($this->storage_mock->users[1], $auth->user());
+	}
+
+	/**
+	 * Testing fetching a user when not logged in
+	 */
+	public function testUserNotLoggedIn()
+	{
+		$this->default_instance->logout();
+		$this->assertFalse($this->default_instance->user());
+	}
+
+	/**
+	 * Testing when the storage can't find a user who claims to be logged in.
+	 */
+	public function testUserGone()
+	{
+		$storage_mock = new StorageDelegateMock();
+		$auth = new Auth('default', $this->persistent_mock, $storage_mock, array(
+				'phpass_cost' => 8,
+			));
+
+		$auth->login('Alex', 'Alex');
+
+		// Everything should be fine at the moment:
+		$this->assertTrue($auth->logged_in());
+
+		// Unset the user from storage, so when we call user(), they're gone.
+		unset($storage_mock->users[1]);
+
+		$this->assertFalse($auth->user());
+		$this->assertFalse($auth->logged_in());
+	}
+
 }

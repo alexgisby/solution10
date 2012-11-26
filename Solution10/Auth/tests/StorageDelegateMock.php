@@ -7,7 +7,8 @@ namespace Solution10\Auth\Tests;
  */
 class StorageDelegateMock implements \Solution10\Auth\StorageDelegate
 {
-	private $users = array(
+	// Public only so the tests can access this data to verify:
+	public $users = array(
 		1 => array(
 			'id' => 1,
 			'username' => 'Alex',
@@ -36,6 +37,11 @@ class StorageDelegateMock implements \Solution10\Auth\StorageDelegate
 		}
 
 		return false;
+	}
+
+	public function auth_fetch_user_representation($user_id)
+	{
+		return (array_key_exists($user_id, $this->users))? $this->users[$user_id] : false;
 	}
 
 	public function auth_user_logged_in($user_id)

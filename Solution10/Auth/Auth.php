@@ -41,6 +41,11 @@ class Auth
 	protected $hasher;
 
 	/**
+	 * @var  mixed 	The representation of the user that StorageDelegate passes back
+	 */
+	protected $user;
+
+	/**
 	 * Constructor. Pass in all the options for this instance, including all your
 	 * hashing and salting stuff.
 	 *
@@ -108,6 +113,8 @@ class Auth
 	 * @param  string 	Username field value
 	 * @param  string 	Password
 	 * @return bool
+	 * @uses   StorageDelegate::auth_fetch_user_by_username
+	 * @uses   PersistentStore::auth_write
 	 */
 	public function login($username, $password)
 	{
@@ -132,6 +139,7 @@ class Auth
 	 * Checking if a user is logged in or not.
 	 *
 	 * @return bool
+	 * @uses   PersistentStore::auth_read
 	 */
 	public function logged_in()
 	{
@@ -143,11 +151,36 @@ class Auth
 	 * the session
 	 *
 	 * @return  void
+	 * @uses   PersistentStore::auth_delete
 	 */
 	public function logout()
 	{
 		$this->persistent_store->auth_delete($this->name());
+		$this->user = false;
 		// TODO: Again, probably broadcast an Event when this occurs
+	}
+
+	/**
+	 * Returns the currently logged in user. False if there's no user.
+	 *
+	 * @return 	mixed 	Whatever the StorageDelegate throws back
+	 * @uses   StorageDelegate::auth_fetch_user_representation
+	 */
+	public function user()
+	{
+		if(!$this->logged_in())
+			return false;
+
+		if(!isset($this->user))
+		{
+			$this->user = $this->storage->auth_fetch_user_representation($this->persistent_store->auth_read($this->name()));
+		}
+
+		// If the user is false, we've got a bad-un, so kill the session:
+		if(!$this->user)
+			$this->logout();
+
+		return $this->user;
 	}
 
 }

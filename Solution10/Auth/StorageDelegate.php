@@ -38,10 +38,20 @@ interface StorageDelegate
 	public function auth_fetch_user_by_username($username);
 
 	/**
+	 * Fetches the full user representation of a given ID. ie your active record
+	 * instance or the like.
+	 *
+	 * @param int $user_id ID of the logged in user
+	 * @return 	mixed 	Whatever you want! Auth won't try and read this, just pass it about.
+	 */
+	public function auth_fetch_user_representation($user_id);
+
+	/**
 	 * Called when a user successfully logs in
 	 *
 	 * @param  mixed $user_id The ID of the user who just signed in
 	 * @return void
+	 * @deprecated  ?? Maybe ignore in favour of events?
 	 */
 	public function auth_user_logged_in($user_id);
 }

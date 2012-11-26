@@ -100,4 +100,32 @@ class Auth
 		return $this->hasher->CheckPassword($pass, $hash);
 	}
 
+	/**
+	 * Attempt to log a user in. Will ask the PersistentStore to store the fact
+	 * that a user logged in, and will tell & use StorageDelegate to fetch the data
+	 * and that it occured.
+	 *
+	 * @param  string 	Username field value
+	 * @param  string 	Password
+	 * @return bool
+	 */
+	public function login($username, $password)
+	{
+		$user = $this->storage->auth_fetch_user_by_username($username);
+		if(!$user)
+			return false;
+
+		if(!$this->check_password($password, $user['password']))
+			return false;
+
+		// Awesome, their details are good, log them in:
+		$this->persistent_store->auth_user_logged_in($user['id']);
+		$this->storage->auth_user_logged_in($user['id']);
+
+		// TODO: when events is done, probably worth broadcasting an event
+		// here as well.
+		
+		return true;
+	}
+
 }

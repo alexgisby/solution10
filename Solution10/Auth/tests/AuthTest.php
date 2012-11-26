@@ -82,4 +82,28 @@ class AuthTest extends Solution10\Tests\TestCase
 		$this->assertTrue($this->default_instance->check_password($pass, $hashed));
 	}
 
+	/**
+	 * Tests logging a user in successfully
+	 */
+	public function testSuccessfulLogin()
+	{
+		$this->assertTrue($this->default_instance->login('Alex', 'Alex'));
+	}
+
+	/**
+	 * Test unsuccessful login
+	 */
+	public function testUnsuccessfulLogin()
+	{
+		$this->assertFalse($this->default_instance->login('Alex', 'wrong-password'));
+	}
+
+	/**
+	 * Test login with a bad username
+	 */
+	public function testLoginBadUsername()
+	{
+		$this->assertFalse($this->default_instance->login('Jenny', 'password'));
+	}
+
 }

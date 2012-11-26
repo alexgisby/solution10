@@ -31,4 +31,12 @@ interface PersistentStore
 	 */
 	public function auth_write($instance_name, $auth_data);
 
+	/**
+	 * Deletes a value from the persistent store
+	 *
+	 * @param  string 	$instance_name 	Name of the instance to void
+	 * @return bool
+	 */
+	public function auth_delete($instance_name);
+
 }

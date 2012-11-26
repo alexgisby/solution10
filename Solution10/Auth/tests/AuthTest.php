@@ -122,4 +122,23 @@ class AuthTest extends Solution10\Tests\TestCase
 		$this->assertTrue($auth->logged_in());
 	}
 
+	/**
+	 * Testing logout()
+	 */
+	public function testLogout()
+	{
+		// Create a clean auth instance:
+		$auth = new Auth('default', $this->persistent_mock, $this->storage_mock, array(
+				'phpass_cost' => 8,
+			));
+
+		$this->assertFalse($auth->logged_in());
+
+		$auth->login('Alex', 'Alex');
+		$this->assertTrue($auth->logged_in());
+
+		$auth->logout();
+		$this->assertFalse($auth->logged_in());
+	}
+
 }

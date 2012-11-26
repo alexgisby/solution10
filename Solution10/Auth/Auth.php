@@ -138,4 +138,16 @@ class Auth
 		return (bool)$this->persistent_store->auth_read($this->name());
 	}
 
+	/**
+	 * Logs a user out. Mostly just a call to the PersistentStore to null
+	 * the session
+	 *
+	 * @return  void
+	 */
+	public function logout()
+	{
+		$this->persistent_store->auth_delete($this->name());
+		// TODO: Again, probably broadcast an Event when this occurs
+	}
+
 }

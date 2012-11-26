@@ -119,13 +119,23 @@ class Auth
 			return false;
 
 		// Awesome, their details are good, log them in:
-		$this->persistent_store->auth_user_logged_in($user['id']);
+		$this->persistent_store->auth_write($this->name(), $user['id']);
 		$this->storage->auth_user_logged_in($user['id']);
 
 		// TODO: when events is done, probably worth broadcasting an event
 		// here as well.
 		
 		return true;
+	}
+
+	/**
+	 * Checking if a user is logged in or not.
+	 *
+	 * @return bool
+	 */
+	public function logged_in()
+	{
+
 	}
 
 }

@@ -31,12 +31,4 @@ interface PersistentStore
 	 */
 	public function auth_write($instance_name, $auth_data);
 
-	/**
-	 * Called when a user successfully logs in
-	 *
-	 * @param  mixed $user_id The ID of the user who just signed in
-	 * @return void
-	 */
-	public function auth_user_logged_in($user_id);
-
 }

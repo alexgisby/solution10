@@ -32,16 +32,4 @@ class PersistentStoreMock implements \Solution10\Auth\PersistentStore
 		$this->storage[$instance_name] = $auth_data;
 		return true;
 	}
-
-	/**
-	 * Called when a user successfully logs in
-	 *
-	 * @param  mixed $user_id The ID of the user who just signed in
-	 * @return void
-	 */
-	public function auth_user_logged_in($user_id)
-	{
-		// Do nothing for now.
-		return true;
-	}
 }

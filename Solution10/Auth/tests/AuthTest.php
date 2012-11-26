@@ -61,4 +61,15 @@ class AuthTest extends Solution10\Tests\TestCase
 		$this->assertEquals('default', $this->default_instance->name());
 	}
 
+	/**
+	 * Test password hashing
+	 */
+	public function testHashing()
+	{
+		$pass = 'fgjkdfhgdf77989';
+		$hashed = $this->default_instance->hash_password($pass);
+		$this->assertEquals(60, strlen($hashed));
+		$this->assertEquals(0, strpos($hashed, '$2a'));
+	}
+
 }

@@ -77,4 +77,15 @@ class Auth
 		return $this->name;
 	}
 
+	/**
+	 * Hashing a password
+	 *
+	 * @param  string 	Plaintext password to hash
+	 * @return string 	Hashed representation of password
+	 */
+	public function hash_password($pass)
+	{
+		return $this->hasher->HashPassword($pass);
+	}
+
 }

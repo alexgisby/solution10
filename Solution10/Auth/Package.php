@@ -119,4 +119,23 @@ abstract class Package
 		return $this->callbacks;
 	}
 
+
+	/**
+	 * ---------------- Precedence --------------------
+	 */
+	
+	/**
+	 * Gets / sets the precedence of the package.
+	 *
+	 * @param  	int 	$precedence 
+	 * @return 	int|this
+	 */
+	public function precedence($precedence = null)
+	{
+		if($precedence === null)
+			return $this->precedence;
+
+		$this->precedence = $precedence;
+		return $this;
+	}
 }

@@ -56,4 +56,15 @@ class PackageTest extends Solution10\Tests\TestCase
 
 		$this->assertEquals($rules, $package->rules());
 	}
+
+	/**
+	 * Testing precedence
+	 */
+	public function testPrecedence()
+	{
+		$package = new PackageMock();
+		
+		$this->assertTrue($package->precedence(5) instanceof PackageMock);
+		$this->assertEquals(5, $package->precedence());
+	}
 }

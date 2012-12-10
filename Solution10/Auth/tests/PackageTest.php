@@ -1,7 +1,7 @@
 <?php
 
 use Solution10\Auth\Package as Package;
-use Solution10\Auth\Tests\PackageMock as PackageMock;
+use Solution10\Auth\Tests\Mocks\Package as PackageMock;
 
 /**
  * Tests for the Package class

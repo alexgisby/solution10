@@ -1,11 +1,11 @@
 <?php
 
-namespace Solution10\Auth\Tests;
+namespace Solution10\Auth\Tests\Mocks;
 
 /**
  * General Package Mock
  */
-class PackageMock extends \Solution10\Auth\Package
+class Package extends \Solution10\Auth\Package
 {
 	public function init()
 	{

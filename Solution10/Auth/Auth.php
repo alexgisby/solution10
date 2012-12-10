@@ -194,7 +194,7 @@ class Auth
 	 * @param 	string 	Name of the package to add.
 	 * @return 	bool
 	 * @throws 	PackageException
-	 * @uses 	PersistentStore
+	 * @uses 	SessionDelegate
 	 */
 	public function add_package_to_user($user_id, $package_name)
 	{

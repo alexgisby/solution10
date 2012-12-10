@@ -14,11 +14,13 @@ class StorageDelegate implements \Solution10\Auth\StorageDelegate
 			'username' => 'Alex',
 			'email' => 'alex@solution10.com',
 			'password' => '$2a$08$pQIwqrJ00RbAikHLcQ8tOuSrDFEvToDmbXxtXEFO8vJRC38cXZX76', // Alex
+			'packages' => array(),
 		),
 		2 => array(
 			'id' => 2,
 			'username' => 'Lucie',
 			'email' => 'lucie@solution10.com',
+			'packages' => array(),
 		),
 	);
 
@@ -43,6 +45,23 @@ class StorageDelegate implements \Solution10\Auth\StorageDelegate
 	{
 		return (array_key_exists($user_id, $this->users))? $this->users[$user_id] : false;
 	}
+
+
+
+	public function auth_add_package_to_user($instance_name, $user, \Solution10\Auth\Package $package)
+	{
+		foreach($this->users as &$u)
+		{
+			if($u['id'] == $user['id'])
+			{
+				$u['packages'][] = $package;
+			}
+		}
+
+		return true;
+	}
+
+
 
 	public function auth_user_logged_in($user_id)
 	{

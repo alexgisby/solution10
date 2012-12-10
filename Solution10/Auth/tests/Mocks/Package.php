@@ -27,6 +27,11 @@ class Package extends \Solution10\Auth\Package
 
 	}
 
+	public function name()
+	{
+		return 'TestPackage';
+	}
+
 	public function edit_post()
 	{
 		return false;

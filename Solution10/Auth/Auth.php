@@ -21,9 +21,9 @@ class Auth
 	protected $name;
 
 	/**
-	 * @var PersistentStore Instance of the PersistentStore interface (Session class basically)
+	 * @var SessionDelegate Instance of the SessionDelegate interface.
 	 */
-	protected $persistent_store;
+	protected $session;
 
 	/**
 	 * @var 	StorageDelegate 	Storage Delegate implementation. DB access basically.
@@ -50,15 +50,15 @@ class Auth
 	 * hashing and salting stuff.
 	 *
 	 * @param 	string 			$name 				Name of this instance.
-	 * @param   PersistentStore $persistent_store 	The PersistentStore implementation for storing Session type data
+	 * @param   SessionDelegate $session 			The SessionDelegate implementation for storing Session type data
 	 * @param   StorageDelegate $storage 			The StorageDelegate implementation for data access.
 	 * @param 	array 			$options 			Options. Must contain, err, something.
 	 * @return 	this
 	 */
-	public function __construct($name, SessionDelegate $persistent_store, StorageDelegate $storage, array $options)
+	public function __construct($name, SessionDelegate $session, StorageDelegate $storage, array $options)
 	{
 		$this->name = $name;
-		$this->persistent_store = $persistent_store;
+		$this->session = $session;
 		$this->storage = $storage;
 		$this->options = $options;
 
@@ -126,7 +126,7 @@ class Auth
 			return false;
 
 		// Awesome, their details are good, log them in:
-		$this->persistent_store->auth_write($this->name(), $user['id']);
+		$this->session->auth_write($this->name(), $user['id']);
 		$this->storage->auth_user_logged_in($user['id']);
 
 		// TODO: when events is done, probably worth broadcasting an event
@@ -139,11 +139,11 @@ class Auth
 	 * Checking if a user is logged in or not.
 	 *
 	 * @return bool
-	 * @uses   PersistentStore::auth_read
+	 * @uses   SessionDelegate::auth_read
 	 */
 	public function logged_in()
 	{
-		return (bool)$this->persistent_store->auth_read($this->name());
+		return (bool)$this->session->auth_read($this->name());
 	}
 
 	/**
@@ -151,11 +151,11 @@ class Auth
 	 * the session
 	 *
 	 * @return  void
-	 * @uses   PersistentStore::auth_delete
+	 * @uses   SessionDelegate::auth_delete
 	 */
 	public function logout()
 	{
-		$this->persistent_store->auth_delete($this->name());
+		$this->session->auth_delete($this->name());
 		$this->user = false;
 		// TODO: Again, probably broadcast an Event when this occurs
 	}
@@ -173,7 +173,7 @@ class Auth
 
 		if(!isset($this->user))
 		{
-			$this->user = $this->storage->auth_fetch_user_representation($this->persistent_store->auth_read($this->name()));
+			$this->user = $this->storage->auth_fetch_user_representation($this->session->auth_read($this->name()));
 		}
 
 		// If the user is false, we've got a bad-un, so kill the session:
@@ -191,14 +191,35 @@ class Auth
 	 * Adds a package to a user
 	 *
 	 * @param 	mixed 	Primary key of the user
-	 * @param 	string 	Name of the package to add.
-	 * @return 	bool
+	 * @param 	mixed 	String name of package, or instance of package.
+	 * @return 	this
 	 * @throws 	PackageException
-	 * @uses 	SessionDelegate
+	 * @uses 	StorageDelegate 	Lots.
 	 */
-	public function add_package_to_user($user_id, $package_name)
+	public function add_package_to_user($user_id, $package)
 	{
+		// Check that the user exists:
+		$user = $this->storage->auth_fetch_user_representation($user_id);
+		if(!$user)
+			throw new Exception\Package('User ' . $user_id . ' not found.', Exception\Package::USER_NOT_FOUND);
 
+		// Check that the package exists:
+		if(is_string($package) && class_exists($package))
+		{
+			$package = new $package();
+		}
+		elseif(is_string($package) && !class_exists($package))
+		{
+			throw new Exception\Package('Package: ' . $package . ' not found.', Exception\Package::PACKAGE_NOT_FOUND);
+		}
+
+		// Check that the package is correct:
+		if(!$package instanceof Package)
+			throw new Exception\Package('Package: ' . $package->name() . ' must inherit from Auth\Package', Exception\Package::PACKAGE_BAD_LINEAGE);
+
+		// All good. Add the package to the user:
+		$this->storage->auth_add_package_to_user($this->name(), $user, $package);
+		return $this;
 	}
 
 }

@@ -47,6 +47,16 @@ interface StorageDelegate
 	public function auth_fetch_user_representation($user_id);
 
 	/**
+	 * Adding a package to a given user.
+	 *
+	 * @param 	string 			Auth instance name
+	 * @param 	mixed 			User representation (taken from auth_fetch_user_representation)
+	 * @param 	Auth\Package 	Package to add.
+	 * @return 	bool
+	 */
+	public function auth_add_package_to_user($instance_name, $user, Package $package);
+
+	/**
 	 * Called when a user successfully logs in
 	 *
 	 * @param  mixed $user_id The ID of the user who just signed in

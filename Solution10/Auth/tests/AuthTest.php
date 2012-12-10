@@ -3,6 +3,7 @@
 use Solution10\Auth\Auth as Auth;
 use Solution10\Auth\Tests\Mocks\SessionDelegate as SessionDelegateMock;
 use Solution10\Auth\Tests\Mocks\StorageDelegate as StorageDelegateMock;
+use Solution10\Auth\Tests\Mocks\Package as PackageMock;
 
 /**
  * Tests for the Auth class
@@ -183,6 +184,22 @@ class AuthTest extends Solution10\Tests\TestCase
 
 		$this->assertFalse($auth->user());
 		$this->assertFalse($auth->logged_in());
+	}
+
+
+	/**
+	 * Testing adding a package to a user successfully
+	 */
+	public function testAddPackageInstanceSuccessful()
+	{
+		$storage_mock = new StorageDelegateMock();
+		$auth = new Auth('default', $this->session_mock, $storage_mock, array(
+				'phpass_cost' => 8,
+			));
+
+		$package = new PackageMock();
+		$auth->add_package_to_user(1, $package);
+		$this->assertEquals($package, $storage_mock->users[1]['packages'][0]);
 	}
 
 }

@@ -37,6 +37,13 @@ abstract class Package
 	abstract public function init();
 
 	/**
+	 * Your package must return a name for itself.
+	 *
+	 * @return 	string
+	 */
+	abstract public function name();
+
+	/**
 	 * ------------------- Adding rules and callbacks -----------------
 	 */
 

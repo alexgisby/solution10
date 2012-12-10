@@ -3,16 +3,18 @@
 namespace Solution10\Auth;
 
 /**
- * Your PesistentStore class (probably a session class)
- * needs to implement this interface so Auth can read and write to it.
- * Up to you to write this!
+ * Session Delegate.
+ *
+ * You need to implement this to allow for persistence between calls
+ * to your app. Usually just integrate with your frameworks session
+ * handler.
  *
  * @package 	Solution10
  * @category  	Auth
  * @author 		Alex Gisby <alex@solution10.com>
  * @license 	MIT
  */
-interface PersistentStore
+interface SessionDelegate
 {
 	/**
 	 * Reads the authentication data out of the session for a given named instance.

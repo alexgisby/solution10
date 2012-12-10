@@ -55,7 +55,7 @@ class Auth
 	 * @param 	array 			$options 			Options. Must contain, err, something.
 	 * @return 	this
 	 */
-	public function __construct($name, PersistentStore $persistent_store, StorageDelegate $storage, array $options)
+	public function __construct($name, SessionDelegate $persistent_store, StorageDelegate $storage, array $options)
 	{
 		$this->name = $name;
 		$this->persistent_store = $persistent_store;
@@ -181,6 +181,24 @@ class Auth
 			$this->logout();
 
 		return $this->user;
+	}
+
+	/**
+	 * ------------ Package Management Functions ---------------
+	 */
+
+	/**
+	 * Adds a package to a user
+	 *
+	 * @param 	mixed 	Primary key of the user
+	 * @param 	string 	Name of the package to add.
+	 * @return 	bool
+	 * @throws 	PackageException
+	 * @uses 	PersistentStore
+	 */
+	public function add_package_to_user($user_id, $package_name)
+	{
+
 	}
 
 }

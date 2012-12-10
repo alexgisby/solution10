@@ -1,11 +1,11 @@
 <?php
 
-namespace Solution10\Auth\Tests;
+namespace Solution10\Auth\Tests\Mocks;
 
 /**
  * Persistent Store test Mock
  */
-class PersistentStoreMock implements \Solution10\Auth\PersistentStore
+class SessionDelegate implements \Solution10\Auth\SessionDelegate
 {
 	protected $storage = array();
 

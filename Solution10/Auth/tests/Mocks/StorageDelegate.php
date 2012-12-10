@@ -1,11 +1,11 @@
 <?php
 
-namespace Solution10\Auth\Tests;
+namespace Solution10\Auth\Tests\Mocks;
 
 /**
  * Storage Delegate Mock.
  */
-class StorageDelegateMock implements \Solution10\Auth\StorageDelegate
+class StorageDelegate implements \Solution10\Auth\StorageDelegate
 {
 	// Public only so the tests can access this data to verify:
 	public $users = array(

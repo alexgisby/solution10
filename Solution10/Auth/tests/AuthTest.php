@@ -1,8 +1,8 @@
 <?php
 
 use Solution10\Auth\Auth as Auth;
-use Solution10\Auth\Tests\PersistentStoreMock as PersistentStoreMock;
-use Solution10\Auth\Tests\StorageDelegateMock as StorageDelegateMock;
+use Solution10\Auth\Tests\Mocks\SessionDelegate as SessionDelegateMock;
+use Solution10\Auth\Tests\Mocks\StorageDelegate as StorageDelegateMock;
 
 /**
  * Tests for the Auth class
@@ -10,7 +10,7 @@ use Solution10\Auth\Tests\StorageDelegateMock as StorageDelegateMock;
 class AuthTest extends Solution10\Tests\TestCase
 {
 	protected $default_instance;
-	protected $persistent_mock;
+	protected $session_mock;
 	protected $storage_mock;
 
 	/**
@@ -18,10 +18,10 @@ class AuthTest extends Solution10\Tests\TestCase
 	 */
 	public function setUp()
 	{
-		$this->persistent_mock = new PersistentStoreMock();
+		$this->session_mock = new SessionDelegateMock();
 		$this->storage_mock = new StorageDelegateMock();
 		$this->default_instance = new Auth('default', 
-										$this->persistent_mock, 
+										$this->session_mock, 
 										$this->storage_mock, 
 										array(
 											'phpass_cost' => 8,
@@ -34,9 +34,9 @@ class AuthTest extends Solution10\Tests\TestCase
 	 */
 	public function testConstructor()
 	{
-		$store = new PersistentStoreMock();
+		$session = new SessionDelegateMock();
 		$storage = new StorageDelegateMock();
-		$auth = new Auth('default', $store, $storage, array(
+		$auth = new Auth('default', $session, $storage, array(
 			'phpass_cost' => 8,
 		));
 		$this->assertTrue($auth instanceof Auth);
@@ -50,7 +50,7 @@ class AuthTest extends Solution10\Tests\TestCase
 	 */
 	public function testNoPhpassCost()
 	{
-		$auth = new Auth('default', $this->persistent_mock, $this->storage_mock, array());
+		$auth = new Auth('default', $this->session_mock, $this->storage_mock, array());
 	}
 
 	/**
@@ -112,7 +112,7 @@ class AuthTest extends Solution10\Tests\TestCase
 	public function testLoggedIn()
 	{
 		// Create a clean auth instance:
-		$auth = new Auth('default', $this->persistent_mock, $this->storage_mock, array(
+		$auth = new Auth('default', $this->session_mock, $this->storage_mock, array(
 				'phpass_cost' => 8,
 			));
 
@@ -128,7 +128,7 @@ class AuthTest extends Solution10\Tests\TestCase
 	public function testLogout()
 	{
 		// Create a clean auth instance:
-		$auth = new Auth('default', $this->persistent_mock, $this->storage_mock, array(
+		$auth = new Auth('default', $this->session_mock, $this->storage_mock, array(
 				'phpass_cost' => 8,
 			));
 
@@ -146,7 +146,7 @@ class AuthTest extends Solution10\Tests\TestCase
 	 */
 	public function testUser()
 	{
-		$auth = new Auth('default', $this->persistent_mock, $this->storage_mock, array(
+		$auth = new Auth('default', $this->session_mock, $this->storage_mock, array(
 				'phpass_cost' => 8,
 			));
 
@@ -169,7 +169,7 @@ class AuthTest extends Solution10\Tests\TestCase
 	public function testUserGone()
 	{
 		$storage_mock = new StorageDelegateMock();
-		$auth = new Auth('default', $this->persistent_mock, $storage_mock, array(
+		$auth = new Auth('default', $this->session_mock, $storage_mock, array(
 				'phpass_cost' => 8,
 			));
 

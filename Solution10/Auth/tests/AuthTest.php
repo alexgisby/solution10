@@ -202,4 +202,70 @@ class AuthTest extends Solution10\Tests\TestCase
 		$this->assertEquals($package, $storage_mock->users[1]['packages'][0]);
 	}
 
+	/**
+	 * Testing adding a package by string name
+	 */
+	public function testAddPackageStringSuccessful()
+	{
+		$storage_mock = new StorageDelegateMock();
+		$auth = new Auth('default', $this->session_mock, $storage_mock, array(
+				'phpass_cost' => 8,
+			));
+
+		$package = 'Solution10\Auth\Tests\Mocks\Package';
+		$auth->add_package_to_user(1, $package);
+		$this->assertEquals($package, get_class($storage_mock->users[1]['packages'][0]));
+	}
+
+	/**
+	 * Testing adding a package to a user that doesn't exist
+	 *
+	 * @expectedException 		Solution10\Auth\Exception\Package
+	 * @expectedExceptionCode 	0
+	 */
+	public function testAddPackageNoUser()
+	{
+		$storage_mock = new StorageDelegateMock();
+		$auth = new Auth('default', $this->session_mock, $storage_mock, array(
+				'phpass_cost' => 8,
+			));
+
+		$package = 'Solution10\Auth\Tests\Mocks\Package';
+		$auth->add_package_to_user(10, $package);
+	}
+
+	/**
+	 * Testing adding a package that doesn't exist
+	 *
+	 * @expectedException 		Solution10\Auth\Exception\Package
+	 * @expectedExceptionCode 	1
+	 */
+	public function testAddPackageNotFound()
+	{
+		$storage_mock = new StorageDelegateMock();
+		$auth = new Auth('default', $this->session_mock, $storage_mock, array(
+				'phpass_cost' => 8,
+			));
+
+		$package = 'Solution10\Auth\Tests\Mocks\PackageNotExist';
+		$auth->add_package_to_user(1, $package);
+	}
+
+	/**
+	 * Testing adding a package that's not got Package as a parent.
+	 *
+	 * @expectedException 		Solution10\Auth\Exception\Package
+	 * @expectedExceptionCode 	2
+	 */
+	public function testAddPackageBadLineage()
+	{
+		$storage_mock = new StorageDelegateMock();
+		$auth = new Auth('default', $this->session_mock, $storage_mock, array(
+				'phpass_cost' => 8,
+			));
+
+		$package = 'Solution10\Auth\Tests\Mocks\StorageDelegate';
+		$auth->add_package_to_user(1, $package);
+	}
+
 }

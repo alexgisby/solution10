@@ -215,7 +215,7 @@ class Auth
 
 		// Check that the package is correct:
 		if(!$package instanceof Package)
-			throw new Exception\Package('Package: ' . $package->name() . ' must inherit from Auth\Package', Exception\Package::PACKAGE_BAD_LINEAGE);
+			throw new Exception\Package('Package: ' . get_class($package) . ' must inherit from Auth\Package', Exception\Package::PACKAGE_BAD_LINEAGE);
 
 		// All good. Add the package to the user:
 		$this->storage->auth_add_package_to_user($this->name(), $user, $package);

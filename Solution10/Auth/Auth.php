@@ -222,4 +222,30 @@ class Auth
 		return $this;
 	}
 
+	/**
+	 * Removing a package from a user
+	 *
+	 * @param 	mixed 	Primary Key of the user
+	 * @param 	mixed 	String name of the package ot instance of the package
+	 * @return 	this
+	 * @throws 	PackageException
+	 * @uses 	StorageDelegate
+	 */
+	public function remove_package_from_user($user_id, $package)
+	{
+		$user = $this->storage->auth_fetch_user_representation($user_id);
+		if(!$user)
+			throw new Exception\Package('User ' . $user_id . ' not found.', Exception\Package::USER_NOT_FOUND);
+
+		// We kind of don't care if the package doesn't exist, so even if it doesn't,
+		// just palm it off on the StorageDelegate and let it fail silently.
+		if((is_string($package) && class_exists($package)) || $package instanceof Package)
+		{
+			$package = (is_object($package))? $package : new $package();
+			$this->storage->auth_remove_package_from_user($this->name(), $user, new $package());
+		}
+
+		return $this;
+	}
+
 }

@@ -268,4 +268,75 @@ class AuthTest extends Solution10\Tests\TestCase
 		$auth->add_package_to_user(1, $package);
 	}
 
+
+	/**
+	 * Tests removing a package successfully
+	 */
+	public function testRemovePackageInstanceSuccess()
+	{
+		$storage_mock = new StorageDelegateMock();
+		$auth = new Auth('default', $this->session_mock, $storage_mock, array(
+				'phpass_cost' => 8,
+			));
+
+		$package = new \Solution10\Auth\Tests\Mocks\Package();
+		$auth->add_package_to_user(1, $package);
+
+		// Now remove:
+		$auth->remove_package_from_user(1, $package);
+		$this->assertEquals(0, count($storage_mock->users[1]['packages']));
+	}
+
+	/**
+	 * Tests removing a package string successfully
+	 */
+	public function testRemovePackageStringSuccess()
+	{
+		$storage_mock = new StorageDelegateMock();
+		$auth = new Auth('default', $this->session_mock, $storage_mock, array(
+				'phpass_cost' => 8,
+			));
+
+		$package = '\Solution10\Auth\Tests\Mocks\Package';
+		$auth->add_package_to_user(1, $package);
+
+		// Now remove:
+		$auth->remove_package_from_user(1, $package);
+		$this->assertEquals(0, count($storage_mock->users[1]['packages']));
+	}
+
+	/**
+	 * Testing removing a package from a user that doesn't exist
+	 *
+	 * @expectedException 		Solution10\Auth\Exception\Package
+	 * @expectedExceptionCode 	0
+	 */
+	public function testRemovePackageNoUser()
+	{
+		$storage_mock = new StorageDelegateMock();
+		$auth = new Auth('default', $this->session_mock, $storage_mock, array(
+				'phpass_cost' => 8,
+			));
+
+		$package = 'Solution10\Auth\Tests\Mocks\Package';
+		$auth->remove_package_from_user(10, $package);
+	}
+
+	/**
+	 * Tests removing a package that doesn't exist
+	 * Should all be silent.
+	 */
+	public function testRemovePackageNotFound()
+	{
+		$storage_mock = new StorageDelegateMock();
+		$auth = new Auth('default', $this->session_mock, $storage_mock, array(
+				'phpass_cost' => 8,
+			));
+
+		$package = 'Solution10\Auth\Tests\Mocks\PackageNotFound';
+		$auth->remove_package_from_user(1, $package);
+
+		$this->assertTrue(true);
+	}
+
 }

@@ -62,6 +62,31 @@ class StorageDelegate implements \Solution10\Auth\StorageDelegate
 	}
 
 
+	public function auth_remove_package_from_user($instance_name, $user, \Solution10\Auth\Package $package)
+	{
+		// print_r($this->users); exit;
+		foreach($this->users as &$u)
+		{
+			// print_r($u);
+			if($u['id'] == $user['id'])
+			{
+				foreach($u['packages'] as $idx => $p)
+				{
+					// echo $p->name() . ' == ' . $package->name() . PHP_EOL;
+					if($p->name() === $package->name())
+					{
+						// exit('Found package to remove');
+						unset($u['packages'][$idx]);
+						return true;
+					}
+				}
+			}
+		}
+
+		return true;
+	}
+
+
 
 	public function auth_user_logged_in($user_id)
 	{

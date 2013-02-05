@@ -57,6 +57,16 @@ interface StorageDelegate
 	public function auth_add_package_to_user($instance_name, $user, Package $package);
 
 	/**
+	 * Removing a package from a given user.
+	 *
+	 * @param 	string 			Auth instance name
+	 * @param 	mixed 			User representation (taken from auth_fetch_user_representation)
+	 * @param 	Auth\Package 	Package to remove.
+	 * @return 	bool
+	 */
+	public function auth_remove_package_from_user($instance_name, $user, Package $package);
+
+	/**
 	 * Called when a user successfully logs in
 	 *
 	 * @param  mixed $user_id The ID of the user who just signed in

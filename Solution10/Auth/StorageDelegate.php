@@ -17,14 +17,6 @@ namespace Solution10\Auth;
 interface StorageDelegate
 {
 	/**
-	 * Fetches a user by their unique identifier.
-	 *
-	 * @param  mixed 	ID value
-	 * @return mixed 	Who knows?
-	 */
-	public function auth_fetch_user_by_id($id);
-
-	/**
 	 * Fetches a user by their username. This function should return either an
 	 * array containing:
 	 *  - id: the unique identifier for this user
@@ -32,19 +24,21 @@ interface StorageDelegate
 	 * 	- password: the hashed version of the users password.
 	 * If it's a success, or false if there's no user by that name
 	 *
-	 * @param  string $username Username to search for
-	 * @return array|bool
+	 * @param 	string 	Instance name
+	 * @param  	string 	Username to search for
+	 * @return 	array|bool
 	 */
-	public function auth_fetch_user_by_username($username);
+	public function auth_fetch_user_by_username($instance_name, $username);
 
 	/**
 	 * Fetches the full user representation of a given ID. ie your active record
 	 * instance or the like.
 	 *
-	 * @param int $user_id ID of the logged in user
+	 * @param 	string 	Instance name
+	 * @param 	int 	ID of the logged in user
 	 * @return 	mixed 	Whatever you want! Auth won't try and read this, just pass it about.
 	 */
-	public function auth_fetch_user_representation($user_id);
+	public function auth_fetch_user_representation($instance_name, $user_id);
 
 	/**
 	 * Adding a package to a given user.

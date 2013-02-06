@@ -118,7 +118,7 @@ class Auth
 	 */
 	public function login($username, $password)
 	{
-		$user = $this->storage->auth_fetch_user_by_username($username);
+		$user = $this->storage->auth_fetch_user_by_username($this->name(), $username);
 		if(!$user)
 			return false;
 
@@ -173,7 +173,7 @@ class Auth
 
 		if(!isset($this->user))
 		{
-			$this->user = $this->storage->auth_fetch_user_representation($this->session->auth_read($this->name()));
+			$this->user = $this->storage->auth_fetch_user_representation($this->name(), $this->session->auth_read($this->name()));
 		}
 
 		// If the user is false, we've got a bad-un, so kill the session:
@@ -194,7 +194,7 @@ class Auth
 	 */
 	protected function load_user_representation($user_id)
 	{
-		$user = $this->storage->auth_fetch_user_representation($user_id);
+		$user = $this->storage->auth_fetch_user_representation($this->name(), $user_id);
 		if(!$user)
 			throw new Exception\Package('User ' . $user_id . ' not found.', Exception\Package::USER_NOT_FOUND);
 

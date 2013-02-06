@@ -24,13 +24,7 @@ class StorageDelegate implements \Solution10\Auth\StorageDelegate
 		),
 	);
 
-
-	public function auth_fetch_user_by_id($id)
-	{
-		return 	(array_key_exists($id, $this->users))? $this->users[$id] : false;
-	}
-
-	public function auth_fetch_user_by_username($username)
+	public function auth_fetch_user_by_username($instance_name, $username)
 	{
 		foreach($this->users as $user)
 		{
@@ -41,7 +35,7 @@ class StorageDelegate implements \Solution10\Auth\StorageDelegate
 		return false;
 	}
 
-	public function auth_fetch_user_representation($user_id)
+	public function auth_fetch_user_representation($instance_name, $user_id)
 	{
 		return (array_key_exists($user_id, $this->users))? $this->users[$user_id] : false;
 	}

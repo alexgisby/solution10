@@ -290,8 +290,6 @@ class Auth
 	{
 		$user = $this->load_user_representation($user_id);
 
-		// We kind of don't care if the package doesn't exist, so even if it doesn't,
-		// just palm it off on the StorageDelegate and let it fail silently.
 		if((is_string($package) && class_exists($package)) || $package instanceof Package)
 		{
 			$package = (is_object($package))? $package : new $package();

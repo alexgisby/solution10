@@ -336,7 +336,7 @@ class Collection implements \Countable, \ArrayAccess, \Iterator
 			}
 			elseif(is_object($item))
 			{
-				if(property_exists($item, $member) && !($item->$member instanceof \Closure))
+				if(isset($item->$member) && !($item->$member instanceof \Closure))
 				{
 					$arr_to_sort[$key] = $item->$member;
 				}

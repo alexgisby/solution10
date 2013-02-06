@@ -184,6 +184,24 @@ class Auth
 	}
 
 	/**
+	 * Shortcut for loading user representation, will throw correct exception
+	 * if the user is not found.
+	 *
+	 * @param 	mixed 	User primary key
+	 * @return 	mixed 	User rep from auth_fetch_user_representation
+	 * @throws 	PackageException
+	 * @uses 	StorageDelegate
+	 */
+	protected function load_user_representation($user_id)
+	{
+		$user = $this->storage->auth_fetch_user_representation($user_id);
+		if(!$user)
+			throw new Exception\Package('User ' . $user_id . ' not found.', Exception\Package::USER_NOT_FOUND);
+
+		return $user;
+	}
+
+	/**
 	 * ------------ Package Management Functions ---------------
 	 */
 
@@ -198,10 +216,7 @@ class Auth
 	 */
 	public function add_package_to_user($user_id, $package)
 	{
-		// Check that the user exists:
-		$user = $this->storage->auth_fetch_user_representation($user_id);
-		if(!$user)
-			throw new Exception\Package('User ' . $user_id . ' not found.', Exception\Package::USER_NOT_FOUND);
+		$user = $this->load_user_representation($user_id);
 
 		// Check that the package exists:
 		if(is_string($package) && class_exists($package))
@@ -233,9 +248,7 @@ class Auth
 	 */
 	public function remove_package_from_user($user_id, $package)
 	{
-		$user = $this->storage->auth_fetch_user_representation($user_id);
-		if(!$user)
-			throw new Exception\Package('User ' . $user_id . ' not found.', Exception\Package::USER_NOT_FOUND);
+		$user = $this->load_user_representation($user_id);
 
 		// We kind of don't care if the package doesn't exist, so even if it doesn't,
 		// just palm it off on the StorageDelegate and let it fail silently.
@@ -258,10 +271,7 @@ class Auth
 	 */
 	public function packages_for_user($user_id)
 	{
-		$user = $this->storage->auth_fetch_user_representation($user_id);
-		if(!$user)
-			throw new Exception\Package('User ' . $user_id . ' not found.', Exception\Package::USER_NOT_FOUND);
-
+		$user = $this->load_user_representation($user_id);
 		return (array)$this->storage->auth_fetch_packages_for_user($this->name(), $user);
 	}
 
@@ -278,9 +288,7 @@ class Auth
 	 */
 	public function user_has_package($user_id, $package)
 	{
-		$user = $this->storage->auth_fetch_user_representation($user_id);
-		if(!$user)
-			throw new Exception\Package('User ' . $user_id . ' not found.', Exception\Package::USER_NOT_FOUND);
+		$user = $this->load_user_representation($user_id);
 
 		// We kind of don't care if the package doesn't exist, so even if it doesn't,
 		// just palm it off on the StorageDelegate and let it fail silently.

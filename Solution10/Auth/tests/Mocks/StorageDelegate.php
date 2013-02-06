@@ -64,18 +64,14 @@ class StorageDelegate implements \Solution10\Auth\StorageDelegate
 
 	public function auth_remove_package_from_user($instance_name, $user, \Solution10\Auth\Package $package)
 	{
-		// print_r($this->users); exit;
 		foreach($this->users as &$u)
 		{
-			// print_r($u);
 			if($u['id'] == $user['id'])
 			{
 				foreach($u['packages'] as $idx => $p)
 				{
-					// echo $p->name() . ' == ' . $package->name() . PHP_EOL;
 					if($p->name() === $package->name())
 					{
-						// exit('Found package to remove');
 						unset($u['packages'][$idx]);
 						return true;
 					}
@@ -84,6 +80,32 @@ class StorageDelegate implements \Solution10\Auth\StorageDelegate
 		}
 
 		return true;
+	}
+
+	public function auth_fetch_packages_for_user($instance_name, $user)
+	{
+		foreach($this->users as $u)
+		{
+			if($u['id'] == $user['id'])
+			{
+				return $u['packages'];
+			}
+		}
+
+		return array();
+	}
+
+	public function auth_user_has_package($instance_name, $user, \Solution10\Auth\Package $package)
+	{
+		foreach($this->users[$user['id']]['packages'] as $p)
+		{
+			if($p->name() === $package->name())
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 

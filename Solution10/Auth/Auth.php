@@ -242,10 +242,55 @@ class Auth
 		if((is_string($package) && class_exists($package)) || $package instanceof Package)
 		{
 			$package = (is_object($package))? $package : new $package();
-			$this->storage->auth_remove_package_from_user($this->name(), $user, new $package());
+			$this->storage->auth_remove_package_from_user($this->name(), $user, $package);
 		}
 
 		return $this;
+	}
+
+	/**
+	 * Fetches the packages for a user.
+	 *
+	 * @param 	mixed 	Primary key of the user
+	 * @return 	array
+	 * @throws 	PackageException
+	 * @uses 	StorageDelegate
+	 */
+	public function packages_for_user($user_id)
+	{
+		$user = $this->storage->auth_fetch_user_representation($user_id);
+		if(!$user)
+			throw new Exception\Package('User ' . $user_id . ' not found.', Exception\Package::USER_NOT_FOUND);
+
+		return (array)$this->storage->auth_fetch_packages_for_user($this->name(), $user);
+	}
+
+
+	/**
+	 * Checks to see if a user has a package or not. If package is not a valid Package
+	 * or doesn't exist, function will fail silently and return false
+	 *
+	 * @param 	mixed 	Primary key of the user
+	 * @param 	mixed 	String name of the package ot instance of the package
+	 * @return 	bool
+	 * @throws 	PackageException
+	 * @uses 	StorageDelegate
+	 */
+	public function user_has_package($user_id, $package)
+	{
+		$user = $this->storage->auth_fetch_user_representation($user_id);
+		if(!$user)
+			throw new Exception\Package('User ' . $user_id . ' not found.', Exception\Package::USER_NOT_FOUND);
+
+		// We kind of don't care if the package doesn't exist, so even if it doesn't,
+		// just palm it off on the StorageDelegate and let it fail silently.
+		if((is_string($package) && class_exists($package)) || $package instanceof Package)
+		{
+			$package = (is_object($package))? $package : new $package();
+			return $this->storage->auth_user_has_package($this->name(), $user, $package);
+		}
+
+		return false;
 	}
 
 }

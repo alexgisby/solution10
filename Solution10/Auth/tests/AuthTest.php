@@ -339,4 +339,125 @@ class AuthTest extends Solution10\Tests\TestCase
 		$this->assertTrue(true);
 	}
 
+	/**
+	 * Tests fetching packages
+	 */
+	public function testUserPackages()
+	{
+		$storage_mock = new StorageDelegateMock();
+		$auth = new Auth('default', $this->session_mock, $storage_mock, array(
+				'phpass_cost' => 8,
+			));
+
+		$package = '\Solution10\Auth\Tests\Mocks\Package';
+		$auth->add_package_to_user(1, $package);
+
+		$this->assertEquals($auth->packages_for_user(1), $storage_mock->users[1]['packages']);
+	}
+
+	/**
+	 * Tests fetching when there's no packages
+	 */
+	public function testUserNoPackages()
+	{
+		$storage_mock = new StorageDelegateMock();
+		$auth = new Auth('default', $this->session_mock, $storage_mock, array(
+				'phpass_cost' => 8,
+			));
+
+		$this->assertEquals($auth->packages_for_user(1), array());
+	}
+
+	/**
+	 * Tests fetching the packages with unknown user
+	 * @expectedException 		Solution10\Auth\Exception\Package
+	 * @expectedExceptionCode 	0
+	 */
+	public function testUserPackagesNoUser()
+	{
+		$storage_mock = new StorageDelegateMock();
+		$auth = new Auth('default', $this->session_mock, $storage_mock, array(
+				'phpass_cost' => 8,
+			));
+
+		$auth->packages_for_user(10);
+	}
+
+
+	/**
+	 * Testing if a user has a package
+	 */
+	public function testUserHasPackageInstance()
+	{
+		$storage_mock = new StorageDelegateMock();
+		$auth = new Auth('default', $this->session_mock, $storage_mock, array(
+				'phpass_cost' => 8,
+			));
+
+		$package = new \Solution10\Auth\Tests\Mocks\Package();
+		$auth->add_package_to_user(1, $package);
+
+		$this->assertTrue($auth->user_has_package(1, $package));
+	}
+
+	/**
+	 * Testing if a user has a package given by a string
+	 */
+	public function testUserHasPackageString()
+	{
+		$storage_mock = new StorageDelegateMock();
+		$auth = new Auth('default', $this->session_mock, $storage_mock, array(
+				'phpass_cost' => 8,
+			));
+
+		$package = '\Solution10\Auth\Tests\Mocks\Package';
+		$auth->add_package_to_user(1, $package);
+
+		$this->assertTrue($auth->user_has_package(1, $package));
+	}
+
+	/**
+	 * Testing asking if a user has a package that don't exist
+	 */
+	public function testUserHasPackageNotFound()
+	{
+		$storage_mock = new StorageDelegateMock();
+		$auth = new Auth('default', $this->session_mock, $storage_mock, array(
+				'phpass_cost' => 8,
+			));
+
+		$package = '\Solution10\Auth\Tests\Mocks\PackageNotFound';
+		$this->assertFalse($auth->user_has_package(1, $package));
+	}
+
+	/**
+	 * Testing when asking if a user has a packag they haven't been assigned
+	 */
+	public function testUserHasPackageNotAssigned()
+	{
+		$storage_mock = new StorageDelegateMock();
+		$auth = new Auth('default', $this->session_mock, $storage_mock, array(
+				'phpass_cost' => 8,
+			));
+
+		$package = '\Solution10\Auth\Tests\Mocks\Package';
+		$this->assertFalse($auth->user_has_package(1, $package));
+	}
+
+	/**
+	 * Test user has package with unknown user
+	 *
+	 * @expectedException 		Solution10\Auth\Exception\Package
+	 * @expectedExceptionCode 	0
+	 */
+	public function testUserHasPackageNoUser()
+	{
+		$storage_mock = new StorageDelegateMock();
+		$auth = new Auth('default', $this->session_mock, $storage_mock, array(
+				'phpass_cost' => 8,
+			));
+
+		$auth->user_has_package(10, 'Doesnt matter');
+	}
+
 }

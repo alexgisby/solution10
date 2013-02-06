@@ -67,6 +67,25 @@ interface StorageDelegate
 	public function auth_remove_package_from_user($instance_name, $user, Package $package);
 
 	/**
+	 * Fetching all packages for a user
+	 *
+	 * @param 	string 		Auth instance name
+	 * @param 	mixed 		User representation (taken from auth_fetch_user_representation)
+	 * @return 	array
+	 */
+	public function auth_fetch_packages_for_user($instance_name, $user);
+
+	/**
+	 * Returns whether a user has a given package or not.
+	 *
+	 * @param 	string 	Auth instance name
+	 * @param 	mixed 	User representation
+	 * @param 	Auth\Package 	Package to check for
+	 * @return 	bool
+	 */
+	public function auth_user_has_package($instance_name, $user, Package $package);
+
+	/**
 	 * Called when a user successfully logs in
 	 *
 	 * @param  mixed $user_id The ID of the user who just signed in

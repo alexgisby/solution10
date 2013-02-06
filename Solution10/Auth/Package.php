@@ -44,6 +44,14 @@ abstract class Package
 	abstract public function name();
 
 	/**
+	 * Constructor calls init()
+	 */
+	public function __construct()
+	{
+		$this->init();
+	}
+
+	/**
 	 * ------------------- Adding rules and callbacks -----------------
 	 */
 

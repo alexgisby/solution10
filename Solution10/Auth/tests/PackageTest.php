@@ -29,11 +29,14 @@ class PackageTest extends Solution10\Tests\TestCase
 
 		$callbacks = array(
 			'edit_post' => array($package, 'edit_post'),
-			'static_string' => 'PackageMock::static_string',
-			'static_array' 	=> array('PackageMock', 'static_array'),
+			'static_string' => 'Solution10\Auth\Tests\Mocks\Package::static_string',
+			'static_array' 	=> array('Solution10\Auth\Tests\Mocks\Package', 'static_array'),
 			'closure' => function() {
 				return false;
 			},
+			'closure_with_args' => function($arg1, $arg2) {
+				return $arg1 . $arg2;
+			}
 		);
 
 		$this->assertEquals($callbacks, $package->callbacks());
@@ -48,7 +51,7 @@ class PackageTest extends Solution10\Tests\TestCase
 		$package->init();
 
 		$rules = array(
-			'login' => true,
+			'login' => false,
 			'logout' => false,
 			'view_profile' => true,
 			'view_homepage' => false,

@@ -11,7 +11,7 @@ require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor/phpass/PasswordHash.php';
  * @category 	Auth
  * @author 		Alex Gisby <alex@solution10.com>
  * @license 	MIT
- * @uses   		phpass
+ * @uses   		phpass, Solution10\Collection\Collection
  */
 class Auth
 {
@@ -44,6 +44,11 @@ class Auth
 	 * @var  mixed 	The representation of the user that StorageDelegate passes back
 	 */
 	protected $user;
+
+	/**
+	 * @var 	array 	 Permissions cache
+	 */
+	protected $permissions_cache = array();
 
 	/**
 	 * Constructor. Pass in all the options for this instance, including all your
@@ -234,6 +239,10 @@ class Auth
 
 		// All good. Add the package to the user:
 		$this->storage->auth_add_package_to_user($this->name(), $user, $package);
+
+		// And rebuild the permissions:
+		$this->build_permissions_for_user($user_id);
+
 		return $this;
 	}
 
@@ -256,6 +265,9 @@ class Auth
 		{
 			$package = (is_object($package))? $package : new $package();
 			$this->storage->auth_remove_package_from_user($this->name(), $user, $package);
+
+			// And rebuild the permissions:
+			$this->build_permissions_for_user($user_id);
 		}
 
 		return $this;
@@ -299,4 +311,65 @@ class Auth
 		return false;
 	}
 
+
+	/**
+	 * --------------- Permissions! -----------------
+	 */
+
+	/**
+	 * Builds up the permissions for a user by looping through,
+	 * taking on the highest precedence of each tier.
+	 */
+	protected function build_permissions_for_user($user_id)
+	{
+		// Make use of Collection to do some clever sorting:
+		$all_packages = $this->packages_for_user($user_id);
+		$sorted_packages = new \Solution10\Collection\Collection($all_packages);
+		$sorted_packages->sort_by_member('precedence');
+
+		$permissions = array();
+		foreach($sorted_packages as $package)
+		{
+			foreach($package->rules() as $name => $rule)
+			{
+				$permissions[$name] = $rule;
+			}
+
+			foreach($package->callbacks() as $name => $callback)
+			{
+				$permissions[$name] = $callback;
+			}
+		}
+
+		$this->permissions_cache[$user_id] = $permissions;
+	}
+
+	/**
+	 * Can function. The most useful function in the whole thing
+	 * TODO: Needs fleshing out a lot more!
+	 *
+	 */
+	public function user_can($user_id, $permission, array $args = array())
+	{
+		if(!array_key_exists($permission, $this->permissions_cache[$user_id]))
+		{
+			// No permission found. To be safe, we always return false in these
+			// cases.
+			return false;
+		}
+
+		$perm = $this->permissions_cache[$user_id][$permission];
+
+		if(is_bool($perm))
+		{
+			return $perm;
+		}
+		else
+		{
+			return call_user_func_array($perm, $args);
+		}
+
+		// Defensively false anything else:
+		return false;
+	}
 }

@@ -460,4 +460,116 @@ class AuthTest extends Solution10\Tests\TestCase
 		$auth->user_has_package(10, 'Doesnt matter');
 	}
 
+	/**
+	 * Data setup for can() tests
+	 */
+	protected function can_instance()
+	{
+		$storage_mock = new StorageDelegateMock();
+		$auth = new Auth('default', $this->session_mock, $storage_mock, array(
+				'phpass_cost' => 8,
+			));
+
+		$auth->add_package_to_user(1, '\Solution10\Auth\Tests\Mocks\Package');
+		return $auth;
+	}
+
+
+	/**
+	 * Basic user_can() tests on an instance with a single package
+	 */
+	public function testCanBool()
+	{
+		$auth = $this->can_instance();
+		$this->assertFalse($auth->user_can(1, 'login'));
+	}
+
+	public function testCanClosure()
+	{
+		$auth = $this->can_instance();
+		$this->assertFalse($auth->user_can(1, 'closure', array('arg1', 'arg2')));
+	}
+
+	public function testCanInstance()
+	{
+		$auth = $this->can_instance();
+		$this->assertFalse($auth->user_can(1, 'edit_post'));
+	}
+
+	public function testCanStaticString()
+	{
+		$auth = $this->can_instance();
+		$this->assertFalse($auth->user_can(1, 'static_string'));
+	}
+
+	public function testCanStaticArray()
+	{
+		$auth = $this->can_instance();
+		$this->assertFalse($auth->user_can(1, 'static_array'));
+	}
+
+	public function testCanClosureArgs()
+	{
+		$auth = $this->can_instance();
+		$this->assertEquals('arg1arg2', $auth->user_can(1, 'closure_with_args', array('arg1', 'arg2')));
+	}
+
+	public function testCanUnknownPermission()
+	{
+		$auth = $this->can_instance();
+		$this->assertFalse($auth->user_can(1, 'unknown_perm'));
+	}
+
+	/**
+	 * Tests user_can() when another package has overidden everything
+	 */
+	protected function can_higher_instance()
+	{
+		$auth = $this->can_instance();
+		$auth->add_package_to_user(1, 'Solution10\Auth\Tests\Mocks\HigherPackage');
+		return $auth;
+	}
+
+	public function testHigherCanBool()
+	{
+		$auth = $this->can_higher_instance();
+		$this->assertTrue($auth->user_can(1, 'login'));
+	}
+
+	public function testHigherCanClosure()
+	{
+		$auth = $this->can_higher_instance();
+		$this->assertTrue($auth->user_can(1, 'closure', array('arg1', 'arg2')));
+	}
+
+	public function testHigherCanInstance()
+	{
+		$auth = $this->can_higher_instance();
+		$this->assertTrue($auth->user_can(1, 'edit_post'));
+	}
+
+	public function testHigherCanStaticString()
+	{
+		$auth = $this->can_higher_instance();
+		$this->assertTrue($auth->user_can(1, 'static_string'));
+	}
+
+	public function testHigherCanStaticArray()
+	{
+		$auth = $this->can_higher_instance();
+		$this->assertTrue($auth->user_can(1, 'static_array'));
+	}
+
+	public function testHigherCanClosureArgs()
+	{
+		$auth = $this->can_higher_instance();
+		$this->assertEquals('arg2arg1', $auth->user_can(1, 'closure_with_args', array('arg1', 'arg2')));
+	}
+
+	public function testHigherCanUnknownPermission()
+	{
+		$auth = $this->can_higher_instance();
+		$this->assertFalse($auth->user_can(1, 'unknown_perm'));
+	}
+
 }

@@ -5,48 +5,49 @@ namespace Solution10\Auth\Tests\Mocks;
 /**
  * General Package Mock
  */
-class Package extends \Solution10\Auth\Package
+class HigherPackage extends \Solution10\Auth\Package
 {
+	public function name()
+	{
+		return 'HigherTestPackage';
+	}
+
 	public function init()
 	{
 		$this
-			->add_rule('login', false)
-			->add_rule('logout', false)
+			->precedence(10)
+			->add_rule('login', true)
+			->add_rule('logout', true)
 			->add_rules(array(
 					'view_profile' => true,
-					'view_homepage' => false,
+					'view_homepage' => true,
 			  	))
 			->add_callback('edit_post', array($this, 'edit_post'))
 			->add_callbacks(array(
-					'static_string' => __NAMESPACE__ . '\Package::static_string',
-					'static_array' 	=> array(__NAMESPACE__ . '\Package', 'static_array'),
+					'static_string' => __NAMESPACE__ . '\HigherPackage::static_string',
+					'static_array' 	=> array(__NAMESPACE__ . '\HigherPackage', 'static_array'),
 					'closure' => function() {
-						return false;
+						return true;
 					},
 					'closure_with_args' => function($arg1, $arg2) {
-						return $arg1 . $arg2;
+						return $arg2 . $arg1;
 					}
 				));
 
 	}
 
-	public function name()
-	{
-		return 'TestPackage';
-	}
-
 	public function edit_post()
 	{
-		return false;
+		return true;
 	}
 
 	public static function static_string()
 	{
-		return false;
+		return true;
 	}
 
 	public static function static_array()
 	{
-		return false;
+		return true;
 	}
 }

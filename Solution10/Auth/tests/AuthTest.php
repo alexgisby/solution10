@@ -572,4 +572,36 @@ class AuthTest extends Solution10\Tests\TestCase
 		$this->assertFalse($auth->user_can(1, 'unknown_perm'));
 	}
 
+	/**
+	 * Tests a package that is only partially overloaded
+	 */
+	public function testPartiallyOverloadedPackage()
+	{
+		$auth = $this->can_instance();
+		$auth->add_package_to_user(1, 'Solution10\Auth\Tests\Mocks\PartialPackage');
+
+		$this->assertTrue($auth->user_can(1, 'login'));
+		$this->assertTrue($auth->user_can(1, 'closure'));
+		$this->assertTrue($auth->user_can(1, 'edit_post'));
+		$this->assertFalse($auth->user_can(1, 'static_string'));
+		$this->assertFalse($auth->user_can(1, 'static_array'));
+		$this->assertEquals('arg1arg2', $auth->user_can(1, 'closure_with_args', array('arg1', 'arg2')));
+		$this->assertFalse($auth->user_can(1, 'unknown_perm'));
+	}
+
+	/**
+	 * Tests rebuilding permissions when adding / removing packages
+	 */
+	public function testRebuildingPermissions()
+	{
+		$auth = $this->can_instance();
+		$this->assertFalse($auth->user_can(1, 'login'));
+
+		$auth->add_package_to_user(1, 'Solution10\Auth\Tests\Mocks\HigherPackage');
+		$this->assertTrue($auth->user_can(1, 'login'));
+
+		$auth->remove_package_from_user(1, 'Solution10\Auth\Tests\Mocks\HigherPackage');
+		$this->assertFalse($auth->user_can(1, 'login'));
+	}
+
 }

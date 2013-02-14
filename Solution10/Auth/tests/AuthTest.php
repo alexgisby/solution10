@@ -678,7 +678,18 @@ class AuthTest extends Solution10\Tests\TestCase
 	public function testCan()
 	{
 		$auth = $this->can_instance();
-		// $auth->
+		$auth->add_package_to_user(1, 'Solution10\Auth\Tests\Mocks\PartialPackage');
+
+		$auth->force_login(1);
+
+		// Reusing the partial package tests as they cover everything
+		$this->assertTrue($auth->can('login'));
+		$this->assertTrue($auth->can('closure'));
+		$this->assertTrue($auth->can('edit_post'));
+		$this->assertFalse($auth->can('static_string'));
+		$this->assertFalse($auth->can('static_array'));
+		$this->assertEquals('arg1arg2', $auth->can('closure_with_args', array('arg1', 'arg2')));
+		$this->assertFalse($auth->can('unknown_perm'));
 	}
 
 }

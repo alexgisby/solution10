@@ -415,6 +415,6 @@ class Auth
 		if(!$this->logged_in())
 			return false;
 
-		return $this->auth->user_can($this->session->auth_read($this->name()), $permission, $args);
+		return $this->user_can($this->session->auth_read($this->name()), $permission, $args);
 	}
 }

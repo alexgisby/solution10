@@ -4,6 +4,7 @@ use Solution10\Auth\Auth as Auth;
 use Solution10\Auth\Tests\Mocks\SessionDelegate as SessionDelegateMock;
 use Solution10\Auth\Tests\Mocks\StorageDelegate as StorageDelegateMock;
 use Solution10\Auth\Tests\Mocks\Package as PackageMock;
+use Solution10\Auth\Tests\Mocks\UserRepresentation as UserRepMock;
 
 /**
  * Tests for the Auth class
@@ -152,7 +153,9 @@ class AuthTest extends Solution10\Tests\TestCase
 			));
 
 		$auth->login('Alex', 'Alex');
-		$this->assertEquals($this->storage_mock->users[1], $auth->user());
+		$user = $auth->user();
+		$this->assertTrue($user instanceof \Solution10\Auth\UserRepresentation);
+		$this->assertEquals(new UserRepMock($this->storage_mock->users[1]), $user);
 	}
 
 	/**
@@ -602,6 +605,15 @@ class AuthTest extends Solution10\Tests\TestCase
 
 		$auth->remove_package_from_user(1, 'Solution10\Auth\Tests\Mocks\HigherPackage');
 		$this->assertFalse($auth->user_can(1, 'login'));
+	}
+
+	/**
+	 * Tests can() on a user who is currently logged in
+	 */
+	public function testCan()
+	{
+		$auth = $this->can_instance();
+		// $auth->
 	}
 
 }

@@ -36,7 +36,7 @@ interface StorageDelegate
 	 *
 	 * @param 	string 	Instance name
 	 * @param 	int 	ID of the logged in user
-	 * @return 	mixed 	Whatever you want! Auth won't try and read this, just pass it about.
+	 * @return 	UserRepresentation 	The representation you pass back must conform to the UserRepresentation interface.
 	 */
 	public function auth_fetch_user_representation($instance_name, $user_id);
 

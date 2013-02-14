@@ -37,16 +37,14 @@ class StorageDelegate implements \Solution10\Auth\StorageDelegate
 
 	public function auth_fetch_user_representation($instance_name, $user_id)
 	{
-		return (array_key_exists($user_id, $this->users))? $this->users[$user_id] : false;
+		return (array_key_exists($user_id, $this->users))? new UserRepresentation($this->users[$user_id]) : false;
 	}
-
-
 
 	public function auth_add_package_to_user($instance_name, $user, \Solution10\Auth\Package $package)
 	{
 		foreach($this->users as &$u)
 		{
-			if($u['id'] == $user['id'])
+			if($u['id'] == $user->id())
 			{
 				$u['packages'][] = $package;
 			}
@@ -60,7 +58,7 @@ class StorageDelegate implements \Solution10\Auth\StorageDelegate
 	{
 		foreach($this->users as &$u)
 		{
-			if($u['id'] == $user['id'])
+			if($u['id'] == $user->id())
 			{
 				foreach($u['packages'] as $idx => $p)
 				{
@@ -80,7 +78,7 @@ class StorageDelegate implements \Solution10\Auth\StorageDelegate
 	{
 		foreach($this->users as $u)
 		{
-			if($u['id'] == $user['id'])
+			if($u['id'] == $user->id())
 			{
 				return $u['packages'];
 			}
@@ -91,7 +89,7 @@ class StorageDelegate implements \Solution10\Auth\StorageDelegate
 
 	public function auth_user_has_package($instance_name, $user, \Solution10\Auth\Package $package)
 	{
-		foreach($this->users[$user['id']]['packages'] as $p)
+		foreach($this->users[$user->id()]['packages'] as $p)
 		{
 			if($p->name() === $package->name())
 			{

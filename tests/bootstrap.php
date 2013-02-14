@@ -4,6 +4,8 @@ namespace Solution10\Tests;
 
 require_once 'Solution10.php';
 
+ini_set('display_errors', 'On');
+
 /**
  * Unit Tests bootstrap.
  *
@@ -14,4 +16,4 @@ require_once 'Solution10.php';
  * @author 		Alex Gisby <alex@solution10.com>
  */
 class TestCase extends \PHPUnit_Framework_TestCase
-{}
+{ }

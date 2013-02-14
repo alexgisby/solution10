@@ -346,8 +346,11 @@ class Auth
 
 	/**
 	 * Can function. The most useful function in the whole thing
-	 * TODO: Needs fleshing out a lot more!
-	 *
+	 * 
+	 * @param 	mixed 	User ID
+	 * @param 	string 	Permission name to check in the Package
+	 * @param 	array 	Arguments to pass to a package callback
+	 * @return 	bool 	Yes or no
 	 */
 	public function user_can($user_id, $permission, array $args = array())
 	{
@@ -371,5 +374,21 @@ class Auth
 
 		// Defensively false anything else:
 		return false;
+	}
+
+
+	/**
+	 * Can() is a shortcut for user_can() for the currently logged in user
+	 *
+	 * @param 	string 	Permission name to check in the Package
+	 * @param 	array 	Arguments to pass to a package callback
+	 * @return 	bool 	Yes or no
+	 */
+	public function can($permission, array $args = array())
+	{
+		if(!$this->logged_in())
+			return false;
+
+		return $this->auth->user_can($this->session->auth_read($this->name()), $permission, $args);
 	}
 }

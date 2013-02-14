@@ -166,6 +166,32 @@ class Auth
 	}
 
 	/**
+	 * Forces a UserRepresentation or user ID to be logged in.
+	 * Use this with extreme caution, it doesn't do any validation, it'll
+	 * just blindly let them in. Only use this for post-registration steps
+	 * if it all.
+	 * 
+	 * @param 	UserRepresentation|int
+	 * @return 	bool 	Whether the force worked or not.
+	 */
+	public function force_login($user)
+	{
+		if(is_object($user) && ($user instanceof UserRepresentation) == false)
+			return false;
+
+		$user_id = (is_object($user))? $user->id() : $user;
+		// $user = $this->storage->auth_fetch_user_by_username($this->name(), $username);
+		$user = $this->storage->auth_fetch_user_representation($this->name(), $user_id);
+		if(!$user)
+			return false;
+
+		$this->session->auth_write($this->name(), $user->id());
+		$this->storage->auth_user_logged_in($user->id());
+
+		return true;
+	}
+
+	/**
 	 * Returns the currently logged in user. False if there's no user.
 	 *
 	 * @return 	mixed 	Whatever the StorageDelegate throws back

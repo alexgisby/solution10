@@ -144,6 +144,71 @@ class AuthTest extends Solution10\Tests\TestCase
 	}
 
 	/**
+	 * Testing the force_login() process with an ID
+	 */
+	public function testForceLoginInt()
+	{
+		$auth = new Auth('default', $this->session_mock, $this->storage_mock, array(
+				'phpass_cost' => 8,
+			));
+
+		$this->assertFalse($auth->logged_in());
+		$this->assertTrue($auth->force_login(1));
+		$this->assertTrue($auth->logged_in());
+		$this->assertEquals(new UserRepMock($this->storage_mock->users[1]), $auth->user());
+	}
+
+	/**
+	 * Testing the force_login() process with a user rep
+	 */
+	public function testForceLoginUserRep()
+	{
+		$auth = new Auth('default', $this->session_mock, $this->storage_mock, array(
+				'phpass_cost' => 8,
+			));
+
+		$user_rep = new UserRepMock($this->storage_mock->users[1]);
+
+		$this->assertFalse($auth->logged_in());
+		$this->assertTrue($auth->force_login($user_rep));
+		$this->assertTrue($auth->logged_in());
+		$this->assertEquals($user_rep, $auth->user());
+	}
+
+	/**
+	 * Testing force login with an unknown user
+	 */
+	public function testForceLoginUnknownUser()
+	{
+		$auth = new Auth('default', $this->session_mock, $this->storage_mock, array(
+				'phpass_cost' => 8,
+			));
+
+		$this->assertFalse($auth->logged_in());
+		$this->assertFalse($auth->force_login(10));
+		$this->assertFalse($auth->logged_in());
+	}
+
+	/**
+	 * Testing force login with a bad user rep
+	 */
+	public function testForceLoginBadUserRep()
+	{
+		$auth = new Auth('default', $this->session_mock, $this->storage_mock, array(
+				'phpass_cost' => 8,
+			));
+
+		$user = (object)array(
+			'id' => 'not an instance of UserRepresentation',
+		);
+
+		$this->assertFalse($auth->logged_in());
+		$this->assertFalse($auth->force_login($user));
+		$this->assertFalse($auth->logged_in());
+	}
+
+
+	/**
 	 * Testing fetching the user
 	 */
 	public function testUser()

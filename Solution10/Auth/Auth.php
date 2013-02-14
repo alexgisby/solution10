@@ -367,6 +367,17 @@ class Auth
 			}
 		}
 
+		// And now process any overrides that this user has:
+		$user = $this->load_user_representation($user_id);
+		$overrides = $this->storage->auth_fetch_overrides_for_user($this->name(), $user);
+		foreach($overrides as $permission => $new_value)
+		{
+			if(array_key_exists($permission, $permissions))
+			{
+				$permissions[$permission] = $new_value;
+			}
+		}
+
 		$this->permissions_cache[$user_id] = $permissions;
 	}
 
@@ -417,4 +428,28 @@ class Auth
 
 		return $this->user_can($this->session->auth_read($this->name()), $permission, $args);
 	}
+
+
+	/**
+	 * Overrides a permission for a user. You can use this to further customise
+	 * a Package for a specific user, for instance, allowing a regular user to blog
+	 * or revoking someone's commenting rights, all without setting up a new package.
+	 *
+	 * @param 	mixed 	User ID to change
+	 * @param 	string 	Permission name to change
+	 * @param 	bool 	New permission
+	 * @return 	this
+	 */
+	public function override_permission_for_user($user_id, $permission, $new_value)
+	{
+		$user = $this->load_user_representation($user_id);
+		
+		if($this->storage->auth_override_permission_for_user($this->name(), $user, $permission, $new_value))
+		{
+			$this->build_permissions_for_user($user_id);
+		}
+
+		return $this;
+	}
+
 }

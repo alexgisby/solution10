@@ -43,41 +43,61 @@ interface StorageDelegate
 	/**
 	 * Adding a package to a given user.
 	 *
-	 * @param 	string 			Auth instance name
-	 * @param 	mixed 			User representation (taken from auth_fetch_user_representation)
-	 * @param 	Auth\Package 	Package to add.
+	 * @param 	string 				Auth instance name
+	 * @param 	UserRepresentation  User representation (taken from auth_fetch_user_representation)
+	 * @param 	Auth\Package 		Package to add.
 	 * @return 	bool
 	 */
-	public function auth_add_package_to_user($instance_name, $user, Package $package);
+	public function auth_add_package_to_user($instance_name, UserRepresentation $user, Package $package);
 
 	/**
 	 * Removing a package from a given user.
 	 *
-	 * @param 	string 			Auth instance name
-	 * @param 	mixed 			User representation (taken from auth_fetch_user_representation)
-	 * @param 	Auth\Package 	Package to remove.
+	 * @param 	string 				Auth instance name
+	 * @param 	UserRepresentation  User representation (taken from auth_fetch_user_representation)
+	 * @param 	Auth\Package 		Package to remove.
 	 * @return 	bool
 	 */
-	public function auth_remove_package_from_user($instance_name, $user, Package $package);
+	public function auth_remove_package_from_user($instance_name, UserRepresentation $user, Package $package);
 
 	/**
 	 * Fetching all packages for a user
 	 *
 	 * @param 	string 		Auth instance name
-	 * @param 	mixed 		User representation (taken from auth_fetch_user_representation)
+	 * @param 	UserRepresentation  		User representation (taken from auth_fetch_user_representation)
 	 * @return 	array
 	 */
-	public function auth_fetch_packages_for_user($instance_name, $user);
+	public function auth_fetch_packages_for_user($instance_name, UserRepresentation $user);
 
 	/**
 	 * Returns whether a user has a given package or not.
 	 *
-	 * @param 	string 	Auth instance name
-	 * @param 	mixed 	User representation
-	 * @param 	Auth\Package 	Package to check for
+	 * @param 	string 				Auth instance name
+	 * @param 	UserRepresentation  User representation
+	 * @param 	Auth\Package 		Package to check for
 	 * @return 	bool
 	 */
-	public function auth_user_has_package($instance_name, $user, Package $package);
+	public function auth_user_has_package($instance_name, UserRepresentation $user, Package $package);
+
+	/**
+	 * Stores an overrided permission for a user
+	 *
+	 * @param 	string 	Auth instance name
+	 * @param 	UserRepresentation 
+	 * @param 	string 	Permission
+	 * @param 	bool 	New value
+	 * @return 	bool
+	 */
+	public function auth_override_permission_for_user($instance_name, UserRepresentation $user, $permission, $new_value);
+
+	/**
+	 * Fetches all the permission overrides for a given user.
+	 *
+	 * @param 	mixed 	Auth instance name
+	 * @param 	UserRepresentation
+	 * @return 	array 	An array of permission => (bool) values
+	 */
+	public function auth_fetch_overrides_for_user($instance_name, UserRepresentation $user);
 
 	/**
 	 * Called when a user successfully logs in

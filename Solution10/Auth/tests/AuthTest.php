@@ -692,4 +692,33 @@ class AuthTest extends Solution10\Tests\TestCase
 		$this->assertFalse($auth->can('unknown_perm'));
 	}
 
+	/**
+	 * Testing can() when a user isn't logged in
+	 */
+	public function testCanNotLoggedIn()
+	{
+		$auth = $this->can_instance();
+		$auth->add_package_to_user(1, 'Solution10\Auth\Tests\Mocks\PartialPackage');
+
+		// Reusing the partial package tests as they cover everything
+		$this->assertFalse($auth->can('login'));
+		$this->assertFalse($auth->can('closure'));
+		$this->assertFalse($auth->can('edit_post'));
+		$this->assertFalse($auth->can('static_string'));
+		$this->assertFalse($auth->can('static_array'));
+		$this->assertFalse($auth->can('closure_with_args', array('arg1', 'arg2')));
+		$this->assertFalse($auth->can('unknown_perm'));
+	}
+
+	/**
+	 * Testing adding an override
+	 */
+	public function testOverrideBasic()
+	{
+		$auth = $this->can_instance();
+		$this->assertFalse($auth->user_can(1, 'login'));
+		$auth->override_permission_for_user(1, 'login', true);
+		$this->assertTrue($auth->user_can(1, 'login'));
+	}
+
 }

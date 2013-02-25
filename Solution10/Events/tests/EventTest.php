@@ -31,4 +31,20 @@ class EventTest extends Solution10\Tests\TestCase
 		$event->stop();
 		$this->assertTrue($event->is_stopped());
 	}
+
+	/**
+	 * Testing adding and retrieving event data
+	 */
+	public function testEventData()
+	{
+		$event = new Solution10\Events\Event('test.eventData');
+
+		$this->assertFalse(isset($event['param1']));
+		$event['param1'] = 'Hello World!';
+		$this->assertTrue(isset($event['param1']));
+		$this->assertEquals('Hello World!', $event['param1']);
+		unset($event['param1']);
+		$this->assertFalse(isset($event['param1']));
+	}
+
 }

@@ -261,6 +261,41 @@ class EventRegisterTest extends Solution10\Tests\TestCase
 	}
 
 	/**
+	 * Test broadcasting a pre-created event.
+	 */
+	public function testBroadcastEventObject()
+	{
+		$this->register->listen('test.broadcastObject', function(){
+			InstanceMock::$state = 'broadcastObjectValue';
+		});
+
+		$event = new Solution10\Events\Event('test.broadcastObject');
+		$this->register->broadcast($event);
+		$this->assertEquals('broadcastObjectValue', InstanceMock::$state);
+	}
+
+	/**
+	 * Testing passing in a bad object to broadcast
+	 *
+	 * @expectedException 	\Solution10\Events\Exception
+	 */
+	public function testBroadcastBadObject()
+	{
+		$event = new stdClass();
+		$this->register->broadcast($event);
+	}
+
+	/**
+	 * Testing passing in a bad event string.
+	 *
+	 * @expectedException 	\Solution10\Events\Exception
+	 */
+	public function testBroadcastBadEventName()
+	{
+		$this->register->broadcast(12);
+	}
+
+	/**
 	 * Testing stopping an event
 	 */
 	public function testStoppingEvent()

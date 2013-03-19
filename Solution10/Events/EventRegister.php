@@ -77,35 +77,38 @@ class EventRegister
 			throw new Exception('Invalid Event passed: ' . (string)$event);
 		}
 
-		// Pass the name of the event as first param:
-		array_unshift($params, $event);
+		// Assign the params to the event:
+		foreach($params as $key => $value)
+			$event[$key] = $value;
 
-		// Loop through the handlers:
-		if(array_key_exists($event->name(), $this->handlers))
+		// Loop through the events seeing if they match:
+		foreach($this->handlers as $e => $callbacks)
 		{
-			foreach($this->handlers[$event->name()] as $handler)
+			if($e == $event->name() || preg_match('/' . $e . '/', $event->name()))
 			{
-				if(is_callable($handler) && !$event->is_stopped())
+				foreach($callbacks as $callback)
 				{
-					call_user_func_array($handler, $params);
-				}
+					if(is_callable($callback))
+					{
+						call_user_func_array($callback, array($event));
+					}
 
-				// Kill the loop if stopped:
-				if($event->is_stopped())
-				{
-					break;
+					if($event->is_stopped())
+						break;
 				}
 			}
 		}
 
-		// Loop through the finally callbacks:
-		if(array_key_exists($event->name(), $this->finally))
+		foreach($this->finally as $e => $callbacks)
 		{
-			foreach($this->finally[$event->name()] as $handler)
+			if($e == $event->name() || preg_match('/' . $e . '/', $event->name()))
 			{
-				if(is_callable($handler))
+				foreach($callbacks as $callback)
 				{
-					call_user_func_array($handler, $params);
+					if(is_callable($callback))
+					{
+						call_user_func_array($callback, array($event));
+					}
 				}
 			}
 		}

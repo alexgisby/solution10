@@ -8,20 +8,20 @@ class InstanceMock
 {
 	public static $state;
 
-	public function callback($event, $new_state)
+	public function callback($event)
 	{ 
-		self::$state = $new_state;
+		self::$state = $event['new_state'];
 	}
 
-	public static function static_callback($event, $new_state)
+	public static function static_callback($event)
 	{
-		self::$state = $new_state;
+		self::$state = $event['new_state'];
 	}
 }
 
-function functionMock($event, $new_state)
+function functionMock($event)
 {
-	InstanceMock::$state = $new_state;
+	InstanceMock::$state = $event['new_state'];
 }
 
 /**
@@ -133,7 +133,7 @@ class EventRegisterTest extends Solution10\Tests\TestCase
 		$this->register->listen('test.functionBroacast', $callback);
 
 		$this->register->broadcast('test.functionBroacast', array(
-			'functionBroadcastState'
+			'new_state' => 'functionBroadcastState'
 		));
 
 		$this->assertEquals('functionBroadcastState', InstanceMock::$state);
@@ -149,7 +149,7 @@ class EventRegisterTest extends Solution10\Tests\TestCase
 		$this->register->listen('test.memberbroadcast', $callback);
 
 		$this->register->broadcast('test.memberbroadcast', array(
-			'memberBroadcastState'
+			'new_state' => 'memberBroadcastState'
 		));
 
 		$this->assertEquals('memberBroadcastState', $instance::$state);
@@ -164,7 +164,7 @@ class EventRegisterTest extends Solution10\Tests\TestCase
 		$this->register->listen('test.staticbroadcast', $callback);
 
 		$this->register->broadcast('test.staticbroadcast', array(
-			'staticBroadcastState'
+			'new_state' => 'staticBroadcastState'
 		));
 
 		$this->assertEquals('staticBroadcastState', InstanceMock::$state);
@@ -179,7 +179,7 @@ class EventRegisterTest extends Solution10\Tests\TestCase
 		$this->register->listen('test.staticstringbroadcast', $callback);
 
 		$this->register->broadcast('test.staticstringbroadcast', array(
-			'staticStringBroadcastState'
+			'new_state' => 'staticStringBroadcastState'
 		));
 
 		$this->assertEquals('staticStringBroadcastState', InstanceMock::$state);
@@ -190,15 +190,15 @@ class EventRegisterTest extends Solution10\Tests\TestCase
 	 */
 	public function testAnonBroadcast()
 	{
-		$callback = function($event, $new_state)
+		$callback = function($event)
 		{
-			InstanceMock::$state = $new_state;
+			InstanceMock::$state = $event['new_state'];
 		};
 
 		$this->register->listen('test.anonbroadcast', $callback);
 
 		$this->register->broadcast('test.anonbroadcast', array(
-			'anonBroadcastState'
+			'new_state' => 'anonBroadcastState'
 		));
 
 		$this->assertEquals('anonBroadcastState', InstanceMock::$state);
@@ -209,15 +209,15 @@ class EventRegisterTest extends Solution10\Tests\TestCase
 	 */
 	public function testMultipleBroadcasts()
 	{
-		$callback1 = function($event, $new_state)
+		$callback1 = function($event)
 		{
-			InstanceMock::$state = $new_state . '1';
+			InstanceMock::$state = $event['new_state'] . '1';
 		};
 
 
-		$callback2 = function($event, $new_state)
+		$callback2 = function($event)
 		{
-			InstanceMock::$state .= $new_state . '2';
+			InstanceMock::$state .= $event['new_state'] . '2';
 		};
 
 
@@ -225,7 +225,7 @@ class EventRegisterTest extends Solution10\Tests\TestCase
 		$this->register->listen('test.multiplebroadcast', $callback2);
 
 		$this->register->broadcast('test.multiplebroadcast', array(
-			'multipleBroadcast',
+			'new_state' => 'multipleBroadcast',
 		));
 
 		$this->assertEquals('multipleBroadcast1multipleBroadcast2', InstanceMock::$state);
@@ -369,6 +369,65 @@ class EventRegisterTest extends Solution10\Tests\TestCase
 		$this->assertTrue($finally_fired);
 		$this->assertTrue($c1_fired);
 		$this->assertFalse($c2_fired);
+	}
+
+
+	/**
+	 * Testing binding against all (*) events
+	 */
+	public function testBindAll()
+	{
+		$called = 0;
+		$callback = function() use (&$called)
+		{
+			$called ++;
+		};
+
+		$this->register->listen('bindAll.*', $callback);
+
+		// Broadcast two bindAll event and check that the counter is 2.
+		$this->register->broadcast('bindAll.event1');
+		$this->register->broadcast('bindAll.event2');
+		$this->assertEquals(2, $called);
+	}
+
+	/**
+	 * Advanced testing regex bindings
+	 */
+	public function testRegexCallbacks()
+	{
+		$called = 0;
+		$callback = function() use(&$called)
+		{
+			$called ++;
+		};
+
+		$this->register->listen('app.user.*', $callback);
+		$this->register->broadcast('app.user.register'); // 1
+		$this->register->broadcast('app.user.login'); // 2
+		$this->register->broadcast('app.user.login.error'); // 3
+		$this->register->broadcast('app.error'); // Not fired
+
+		$this->assertEquals(3, $called);
+	} 
+
+	/**
+	 * Tests bind all on the global event namespace
+	 */
+	public function testBindAllEverything()
+	{
+		$called = 0;
+		$callback = function() use (&$called)
+		{
+			$called ++;
+		};
+
+		$this->register->listen('(.*)', $callback);
+
+		// Broadcast two bindAll event and check that the counter is 2.
+		$this->register->broadcast('bindAll.event1');
+		$this->register->broadcast('anotherNamespace.event');
+		$this->assertEquals(2, $called);
 	}
 
 }

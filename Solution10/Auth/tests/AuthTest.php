@@ -721,4 +721,19 @@ class AuthTest extends Solution10\Tests\TestCase
 		$this->assertTrue($auth->user_can(1, 'login'));
 	}
 
+	/**
+	 * Testing resetting the packages on a user after making changes
+	 */
+	public function testResetUserPackages()
+	{
+		$auth = $this->can_instance();
+		$this->assertFalse($auth->user_can(1, 'login'));
+		$auth->override_permission_for_user(1, 'login', true);
+		$this->assertTrue($auth->user_can(1, 'login'));
+
+		// Now reset and check it works:
+		$auth->reset_overrides_for_user(1);
+		$this->assertFalse($auth->user_can(1, 'login'));
+	}
+
 }

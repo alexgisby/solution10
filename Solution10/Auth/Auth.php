@@ -439,12 +439,31 @@ class Auth
 	 * @param 	string 	Permission name to change
 	 * @param 	bool 	New permission
 	 * @return 	this
+	 * @uses 	StorageDelegate
 	 */
 	public function override_permission_for_user($user_id, $permission, $new_value)
 	{
 		$user = $this->load_user_representation($user_id);
 		
 		if($this->storage->auth_override_permission_for_user($this->name(), $user, $permission, $new_value))
+		{
+			$this->build_permissions_for_user($user_id);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Removes the overrides for a user, returning them to package settings.
+	 *
+	 * @param 	mixed 	User ID to change
+	 * @return 	this
+	 * @uses 	StorageDelegate
+	 */
+	public function reset_overrides_for_user($user_id)
+	{
+		$user = $this->load_user_representation($user_id);
+		if($this->storage->auth_reset_overrides_for_user($this->name(), $user))
 		{
 			$this->build_permissions_for_user($user_id);
 		}

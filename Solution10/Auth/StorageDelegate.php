@@ -93,11 +93,20 @@ interface StorageDelegate
 	/**
 	 * Fetches all the permission overrides for a given user.
 	 *
-	 * @param 	mixed 	Auth instance name
+	 * @param 	string 	Auth instance name
 	 * @param 	UserRepresentation
 	 * @return 	array 	An array of permission => (bool) values
 	 */
 	public function auth_fetch_overrides_for_user($instance_name, UserRepresentation $user);
+
+	/**
+	 * Removes all the overrides for a given user.
+	 *
+	 * @param 	string	Auth instance name
+	 * @param 	UserRepresentation
+	 * @return 	bool
+	 */
+	public function auth_reset_overrides_for_user($instance_name, UserRepresentation $user);
 
 	/**
 	 * Called when a user successfully logs in

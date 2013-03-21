@@ -123,6 +123,16 @@ class StorageDelegate implements \Solution10\Auth\StorageDelegate
 		return array();
 	}
 
+	public function auth_reset_overrides_for_user($instance_name, \Solution10\Auth\UserRepresentation $user)
+	{
+		if(array_key_exists($user->id(), $this->users))
+		{
+			$this->users[$user->id()]['overrides'] = array();
+		}
+
+		return true;
+	}
+
 
 
 	public function auth_user_logged_in($user_id)

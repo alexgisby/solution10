@@ -1,0 +1,30 @@
+{
+	"index": "index.md",
+	"nav": [
+		{
+			"title": "Index",
+			"description": "High level overview and usage",
+			"file": "index.md",
+		},
+		{
+			"title": "Installation",
+			"description": "Get Auth up and running",
+			"file": "installation.md"
+		},
+		{
+			"title": "Understanding Instances",
+			"description": "How to create instances of Auth and what they do.",
+			"file": "instances.md"
+		},
+		{
+			"title": "Session Delegate",
+			"description": "What is the Session Delegate and what does it do?",
+			"file": "delegates/session.md"
+		},
+		{
+			"title": "Storage Delegate",
+			"description": "What is the Storage Delegate and what does it do?",
+			"file": "delegates/storage.md"
+		}
+	]
+}

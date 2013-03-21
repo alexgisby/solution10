@@ -25,6 +25,11 @@
 			"title": "Storage Delegate",
 			"description": "What is the Storage Delegate and what does it do?",
 			"file": "delegates/storage.md"
+		},
+		{
+			"title": "Packages",
+			"description": "Packages are at the core of the Authorization workflow.",
+			"file": "packages.md"
 		}
 	]
 }

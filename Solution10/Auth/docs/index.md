@@ -21,7 +21,7 @@ Auth is a combined Authentication and Authorization package.
                                     'phpass_cost' => 8,
                                 ));
 
-    $auth->login('Username', 'password');
+    $auth->login('alex@solution10.com', 'MyPasswordIs1337');
 
     if($auth->logged_in())
     {

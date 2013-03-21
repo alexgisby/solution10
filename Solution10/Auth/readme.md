@@ -15,3 +15,8 @@ Based off [Mauth for Kohana](http://github.com/alexgisby/Mauth)
 
 Auth makes use of the excellent [phpass library](http://www.openwall.com/phpass/) to
 ensure your passwords are securely stored against Rainbow Table attacks.
+
+## Todo before inclusion:
+
+* Add the reset_packages() function to Auth
+* Docs

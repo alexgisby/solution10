@@ -179,9 +179,10 @@ class Auth
 		if(is_object($user) && ($user instanceof UserRepresentation) == false)
 			return false;
 
-		$user_id = (is_object($user))? $user->id() : $user;
-		// $user = $this->storage->auth_fetch_user_by_username($this->name(), $username);
-		$user = $this->storage->auth_fetch_user_representation($this->name(), $user_id);
+		$user = (is_object($user))?
+					$user :
+					$this->storage->auth_fetch_user_representation($this->name(), $user);
+
 		if(!$user)
 			return false;
 

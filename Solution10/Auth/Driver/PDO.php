@@ -188,7 +188,6 @@ class PDO implements StorageDelegate
 	public function auth_fetch_user_by_username($instance_name, $username)
 	{
 		$tbl_name = $this->table_prefix . 'users';
-		
 	}
 
 	/**
